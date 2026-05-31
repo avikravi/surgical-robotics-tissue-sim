@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.env
+venv/
+data/simulations/*
+data/videos/*
+data/gifs/*
+!data/simulations/.gitkeep
+!data/videos/.gitkeep
+!data/gifs/.gitkeep
+.ipynb_checkpoints/
+.DS_Store
