@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surgical Robotics Tissue Sim — Dataset Viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy2: #162232;
+    --teal: #00B4A6;
+    --teal2: #028090;
+    --teal-faint: #EAF5F4;
+    --teal-mid: #AACFCB;
+    --white: #FFFFFF;
+    --text: #1A2E3A;
+    --muted: #4A6572;
+    --border: #DCF0EE;
+    --orange: #F5A623;
+    --purple: #7C6FD4;
+    --card-bg: #F7FAFA;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 2.5rem 3rem 2rem;
+    border-bottom: 1px solid rgba(0,180,166,0.15);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,180,166,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--white);
+  }
+
+  header h1 span { color: var(--teal); }
+
+  .header-meta {
+    font-size: 0.82rem;
+    color: var(--teal-mid);
+    margin-top: 0.6rem;
+    line-height: 1.7;
+  }
+
+  .repo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0,180,166,0.1);
+    border: 1px solid rgba(0,180,166,0.25);
+    color: var(--teal);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .repo-badge:hover { background: rgba(0,180,166,0.2); }
+
+  .stats-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--teal);
+  }
+
+  .stat-label {
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.1rem;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: calc(100vh - 200px);
+  }
+
+  /* ── SIDEBAR ── */
+  aside {
+    background: var(--navy2);
+    border-right: 1px solid rgba(0,180,166,0.12);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+
+  .sidebar-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 0 1.2rem 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 0.5rem;
+  }
+
+  .sim-item {
+    padding: 0.65rem 1.2rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sim-item:hover {
+    background: rgba(0,180,166,0.06);
+    border-left-color: rgba(0,180,166,0.4);
+  }
+
+  .sim-item.active {
+    background: rgba(0,180,166,0.1);
+    border-left-color: var(--teal);
+  }
+
+  .sim-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--teal);
+    font-weight: 600;
+  }
+
+  .sim-tag {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    background: #0f1f2e;
+    padding: 2rem 2.5rem;
+    overflow-y: auto;
+  }
+
+  .sim-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+
+  .sim-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .sim-title span { color: var(--teal); }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+    margin-top: 0.4rem;
+  }
+
+  .tag-elastic { background: rgba(0,180,166,0.15); color: var(--teal); border: 1px solid rgba(0,180,166,0.3); }
+  .tag-poke { background: rgba(245,166,35,0.15); color: var(--orange); border: 1px solid rgba(245,166,35,0.3); }
+  .tag-4cam { background: rgba(124,111,212,0.15); color: var(--purple); border: 1px solid rgba(124,111,212,0.3); }
+
+  /* ── SECTION BLOCKS ── */
+  .section {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 0.75rem 1.2rem;
+    background: rgba(0,180,166,0.06);
+    border-bottom: 1px solid rgba(0,180,166,0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-body { padding: 1.2rem; }
+
+  /* ── METADATA GRID ── */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .meta-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 7px;
+    padding: 0.75rem;
+  }
+
+  .meta-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.3rem;
+  }
+
+  .meta-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .meta-val.highlight { color: var(--teal); }
+  .meta-val.highlight-orange { color: var(--orange); }
+
+  /* ── CAMERA GRID ── */
+  .camera-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .camera-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .camera-card:hover { border-color: rgba(0,180,166,0.4); }
+
+  .camera-label {
+    padding: 0.5rem 0.8rem;
+    background: rgba(0,0,0,0.3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--teal-mid);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .camera-preview {
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #0a1520 0%, #0f2030 50%, #0a1825 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Animated simulation preview placeholder */
+  .camera-preview svg {
+    width: 80%;
+    height: 80%;
+    opacity: 0.85;
+  }
+
+  .cam-pos {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    padding: 0.4rem 0.8rem;
+  }
+
+  /* ── FILE TREE ── */
+  .file-tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.9;
+  }
+
+  .tree-folder { color: var(--teal); }
+  .tree-file { color: #AACFCB; }
+  .tree-file.highlight { color: var(--orange); }
+  .tree-indent { padding-left: 1.2rem; }
+  .tree-size { color: var(--muted); font-size: 0.68rem; margin-left: 0.5rem; }
+
+  /* ── JSON VIEWER ── */
+  .json-block {
+    background: var(--navy2);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    line-height: 1.75;
+    overflow-x: auto;
+  }
+
+  .json-key { color: #7AB5AE; }
+  .json-val { color: #F5A623; }
+  .json-val-str { color: #98C379; }
+  .json-val-highlight { color: var(--teal); font-weight: 600; }
+  .json-brace { color: var(--muted); }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; }
+  .empty p { font-size: 0.85rem; }
+
+  /* ── COMING SOON BADGE ── */
+  .coming-soon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--muted);
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,180,166,0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,180,166,0.4); }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.25s ease forwards; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── GROUND PLANE ANIMATION ── */
+  .sim-scene { animation: none; }
+  .tissue { animation: squish 3s ease-in-out infinite; transform-origin: center bottom; }
+  .poker { animation: poke 3s ease-in-out infinite; }
+
+  @keyframes squish {
+    0%, 40% { transform: scaleY(1) scaleX(1); }
+    60% { transform: scaleY(0.72) scaleX(1.2); }
+    80%, 100% { transform: scaleY(1) scaleX(1); }
+  }
+
+  @keyframes poke {
+    0%, 30% { transform: translateY(0); }
+    60% { transform: translateY(72px); }
+    80%, 100% { transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="header-label">avikravi · surgical-robotics-tissue-sim</div>
+    <h1>Tissue Sim <span>Dataset Viewer</span></h1>
+    <p class="header-meta">
+      Synthetic soft-tissue deformation dataset · Genesis MPM physics<br>
+      Modeled after the <a href="https://huggingface.co/datasets/yizhouz/MASIV" style="color:var(--teal);text-decoration:none;">MASIV dataset</a> · Summer 2026 · Rice University
+    </p>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Simulations</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Camera Views</div></div>
+      <div class="stat"><div class="stat-num">240</div><div class="stat-label">Total Frames</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">ML Targets</div></div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end;flex-shrink:0;">
+    <a href="https://github.com/avikravi/surgical-robotics-tissue-sim" target="_blank" class="repo-badge">
+      ⬡ avikravi / surgical-robotics-tissue-sim
+    </a>
+    <span class="coming-soon">🔒 Private · can transfer to org</span>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-title">Simulations</div>
+
+    <div class="sim-item active" onclick="selectSim('000_elastic_sphere_poke')">
+      <div class="sim-id">000_elastic_sphere_poke</div>
+      <div class="sim-tag">elastic · box · poke · 4 cams</div>
+    </div>
+
+    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.4;pointer-events:none;">
+      <div class="sim-id">001_elastic_sphere_poke</div>
+      <div class="sim-tag">coming soon</div>
+    </div>
+    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.4;pointer-events:none;">
+      <div class="sim-id">002_elastic_sphere_poke</div>
+      <div class="sim-tag">coming soon</div>
+    </div>
+    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.25;pointer-events:none;">
+      <div class="sim-id">003_elastic_box_poke</div>
+      <div class="sim-tag">coming soon</div>
+    </div>
+    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.15;pointer-events:none;">
+      <div class="sim-id">004_elastoplastic_...</div>
+      <div class="sim-tag">coming soon</div>
+    </div>
+
+    <div style="padding:1.5rem 1.2rem 0.5rem; border-top:1px solid rgba(255,255,255,0.05); margin-top:1rem;">
+      <div style="font-size:0.68rem;color:var(--muted);line-height:1.7;">
+        <div style="color:var(--teal-mid);font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem;">Target dataset size</div>
+        100+ simulations<br>
+        5 material types<br>
+        11 camera views<br>
+        30 frames each
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main-content">
+    <div id="sim-view" class="fade-in"></div>
+  </main>
+</div>
+
+<script>
+const SIMULATIONS = {
+  "000_elastic_sphere_poke": {
+    id: "000_elastic_sphere_poke",
+    material: "elastic",
+    geometry: "box",
+    interaction: "poke",
+    metadata: {
+      gravity: -9.8,
+      dt: 0.01,
+      substeps: 32,
+      particle_size: 0.0015,
+      ground_friction: 0.8,
+      resolution: [800, 800],
+      fov: 45,
+      fps: 60,
+      frames: 400,
+    },
+    obj1: {
+      E: 58873.5,
+      nu: 0.261,
+      rho: 923.2,
+      material: "elastic",
+      geometry: "box",
+      surface: "Default",
+      geometry_scale: 0.4,
+      interaction: "poke",
+      initial_location: [0.0, 0.0, 0.2],
+      initial_velocity: [0.0, 0.0, 0.0],
+      initial_rotation: [1.0, 0.0, 0.0, 0.0],
+    },
+    cameras: [
+      { id: "cam_0", pos: [2.0, 0.0, 1.0], lookat: [0, 0, 0.2] },
+      { id: "cam_1", pos: [0.0, 2.0, 1.0], lookat: [0, 0, 0.2] },
+      { id: "cam_2", pos: [-2.0, 0.0, 1.0], lookat: [0, 0, 0.2] },
+      { id: "cam_3", pos: [0.0, -2.0, 1.0], lookat: [0, 0, 0.2] },
+    ],
+    files: [
+      { name: "000_elastic_sphere_poke/", type: "folder", children: [
+        { name: "frames/", type: "folder", children: [
+          { name: "cam_0/   (60 × frame_XXXX.png)", type: "file", size: "~2.6 MB" },
+          { name: "cam_1/   (60 × frame_XXXX.png)", type: "file", size: "~2.5 MB" },
+          { name: "cam_2/   (60 × frame_XXXX.png)", type: "file", size: "~3.9 MB" },
+          { name: "cam_3/   (60 × frame_XXXX.png)", type: "file", size: "~4.2 MB" },
+        ]},
+        { name: "videos/", type: "folder", children: [
+          { name: "cam_0.mp4", type: "file", size: "513 KB", highlight: true },
+          { name: "cam_1.mp4", type: "file", size: "516 KB", highlight: true },
+          { name: "cam_2.mp4", type: "file", size: "490 KB", highlight: true },
+          { name: "cam_3.mp4", type: "file", size: "484 KB", highlight: true },
+        ]},
+        { name: "metadata.json", type: "file", size: "1.1 KB", highlight: true },
+      ]}
+    ]
+  }
+};
+
+function renderSimScene(angle) {
+  // Simple SVG of tissue being poked from different angles
+  const scenes = [
+    // cam_0: front view
+    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
+      <ellipse cx="100" cy="160" rx="55" ry="12" fill="#028090" opacity="0.15"/>
+      <rect class="tissue" x="45" y="120" width="110" height="55" rx="6" fill="#028090" opacity="0.7"/>
+      <rect x="45" y="170" width="110" height="5" rx="2" fill="#016070" opacity="0.5"/>
+      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
+      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_0  front</text>
+    </svg>`,
+    // cam_1: side view
+    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
+      <ellipse cx="100" cy="162" rx="30" ry="10" fill="#028090" opacity="0.15"/>
+      <rect class="tissue" x="70" y="120" width="60" height="55" rx="6" fill="#028090" opacity="0.7"/>
+      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
+      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_1  left</text>
+    </svg>`,
+    // cam_2: back view
+    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
+      <rect class="tissue" x="45" y="120" width="110" height="55" rx="6" fill="#028090" opacity="0.6"/>
+      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
+      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_2  back</text>
+    </svg>`,
+    // cam_3: right view
+    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
+      <rect class="tissue" x="70" y="120" width="60" height="55" rx="6" fill="#028090" opacity="0.65"/>
+      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
+      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_3  right</text>
+    </svg>`,
+  ];
+  return scenes[angle] || scenes[0];
+}
+
+function renderFileTree(files, indent = 0) {
+  let html = '';
+  for (const f of files) {
+    const pad = '&nbsp;'.repeat(indent * 4);
+    const prefix = indent === 0 ? '' : (f.children ? '├── ' : '├── ');
+    if (f.type === 'folder') {
+      html += `<div class="tree-folder">${pad}${prefix}📁 ${f.name}</div>`;
+      if (f.children) html += renderFileTree(f.children, indent + 1);
+    } else {
+      html += `<div class="${f.highlight ? 'tree-file highlight' : 'tree-file'}">${pad}${prefix}📄 ${f.name}<span class="tree-size">${f.size || ''}</span></div>`;
+    }
+  }
+  return html;
+}
+
+function selectSim(id) {
+  document.querySelectorAll('.sim-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  const sim = SIMULATIONS[id];
+  if (!sim) return;
+
+  const view = document.getElementById('sim-view');
+  view.className = 'fade-in';
+  void view.offsetWidth;
+
+  view.innerHTML = `
+    <div class="sim-header">
+      <div>
+        <div class="sim-title">Simulation <span>${sim.id}</span></div>
+        <div style="margin-top:0.4rem;">
+          <span class="tag tag-elastic">${sim.obj1.material}</span>
+          <span class="tag tag-poke">${sim.obj1.interaction}</span>
+          <span class="tag tag-4cam">4 cameras</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MATERIAL PROPERTIES -->
+    <div class="section">
+      <div class="section-header">⭐ Material Properties (ML Prediction Targets)</div>
+      <div class="section-body">
+        <div class="meta-grid">
+          <div class="meta-card">
+            <div class="meta-key">E — Young's Modulus</div>
+            <div class="meta-val highlight">${sim.obj1.E.toLocaleString()} Pa</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Stiffness of tissue</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">nu — Poisson's Ratio</div>
+            <div class="meta-val highlight">${sim.obj1.nu}</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Compressibility factor</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">rho — Density</div>
+            <div class="meta-val highlight">${sim.obj1.rho} kg/m³</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Similar to human tissue</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Material Type</div>
+            <div class="meta-val">${sim.obj1.material}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Geometry</div>
+            <div class="meta-val">${sim.obj1.geometry} · scale ${sim.obj1.geometry_scale}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Interaction</div>
+            <div class="meta-val highlight-orange">${sim.obj1.interaction}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULATION PARAMS -->
+    <div class="section">
+      <div class="section-header">⚙ Global Simulation Parameters</div>
+      <div class="section-body">
+        <div class="meta-grid">
+          <div class="meta-card">
+            <div class="meta-key">dt</div>
+            <div class="meta-val">${sim.metadata.dt}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">substeps</div>
+            <div class="meta-val">${sim.metadata.substeps}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">gravity</div>
+            <div class="meta-val">${sim.metadata.gravity} m/s²</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">resolution</div>
+            <div class="meta-val">${sim.metadata.resolution[0]} × ${sim.metadata.resolution[1]}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">fps</div>
+            <div class="meta-val">${sim.metadata.fps}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">frames</div>
+            <div class="meta-val">${sim.metadata.frames}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMERA VIEWS -->
+    <div class="section">
+      <div class="section-header">📷 Camera Views (4 of 11 planned)</div>
+      <div class="section-body">
+        <div class="camera-grid">
+          ${sim.cameras.map((cam, i) => `
+            <div class="camera-card">
+              <div class="camera-label">
+                <span>${cam.id}</span>
+                <span style="color:var(--teal);font-size:0.65rem;">60 frames · 800×800</span>
+              </div>
+              <div class="camera-preview">
+                ${renderSimScene(i)}
+              </div>
+              <div class="cam-pos">pos: [${cam.pos.join(', ')}]  →  lookat: [${cam.lookat.join(', ')}]</div>
+            </div>
+          `).join('')}
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">
+          ℹ  Animations are schematic previews. Actual frames are stored as mp4 + per-frame PNG in the repo.
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE STRUCTURE -->
+    <div class="section">
+      <div class="section-header">📁 File Structure</div>
+      <div class="section-body">
+        <div class="file-tree">
+          ${renderFileTree(sim.files)}
+        </div>
+      </div>
+    </div>
+
+    <!-- RAW METADATA JSON -->
+    <div class="section">
+      <div class="section-header">{ } metadata.json</div>
+      <div class="section-body">
+        <div class="json-block">
+<span class="json-brace">{</span>
+  <span class="json-key">"gravity"</span>: <span class="json-val">-9.8</span>,
+  <span class="json-key">"dt"</span>: <span class="json-val">0.01</span>,
+  <span class="json-key">"substeps"</span>: <span class="json-val">32</span>,
+  <span class="json-key">"resolution"</span>: <span class="json-val">[800, 800]</span>,
+  <span class="json-key">"fov"</span>: <span class="json-val">45</span>,
+  <span class="json-key">"fps"</span>: <span class="json-val">60</span>,
+  <span class="json-key">"camera_centers"</span>: <span class="json-val">[[2.0, 0.0, 1.0], [0.0, 2.0, 1.0], ...]</span>,
+  <span class="json-key">"camera_lookats"</span>: <span class="json-val">[[0, 0, 0.2], [0, 0, 0.2], ...]</span>,
+  <span class="json-key">"obj1"</span>: <span class="json-brace">{</span>
+    <span class="json-key">"E"</span>: <span class="json-val-highlight">58873.5</span>,
+    <span class="json-key">"nu"</span>: <span class="json-val-highlight">0.261</span>,
+    <span class="json-key">"rho"</span>: <span class="json-val-highlight">923.2</span>,
+    <span class="json-key">"material"</span>: <span class="json-val-str">"elastic"</span>,
+    <span class="json-key">"geometry"</span>: <span class="json-val-str">"box"</span>,
+    <span class="json-key">"interaction"</span>: <span class="json-val-str">"poke"</span>,
+    <span class="json-key">"geometry_scale"</span>: <span class="json-val">0.4</span>,
+    <span class="json-key">"initial_location"</span>: <span class="json-val">[0.0, 0.0, 0.2]</span>,
+    <span class="json-key">"initial_velocity"</span>: <span class="json-val">[0.0, 0.0, 0.0]</span>,
+    <span class="json-key">"initial_rotation"</span>: <span class="json-val">[1.0, 0.0, 0.0, 0.0]</span>
+  <span class="json-brace">}</span>
+<span class="json-brace">}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Init
+selectSim('000_elastic_sphere_poke');
+</script>
+</body>
+</html>
