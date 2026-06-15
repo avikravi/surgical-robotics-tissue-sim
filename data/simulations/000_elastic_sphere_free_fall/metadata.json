@@ -1,0 +1,75 @@
+{
+  "id": "000_elastic_sphere_free_fall",
+  "description": "Solid elastic sphere free-falling under gravity onto a floor boundary. Standalone MLS-MPM re-implementation of the UniPhy (CVPR 2025) / NCLaw simulator core, validated against analytical free fall (g=9.8 m/s^2) and floor non-penetration.",
+  "framework": {
+    "name": "uniphy_mpm",
+    "note": "Custom Warp re-implementation based on UniPhy_CVPR2025 (HimangiM/UniPhy_CVPR2025), distinct from the Genesis-based pipeline used in earlier simulations.",
+    "reference": "https://github.com/HimangiM/UniPhy_CVPR2025",
+    "warp_version": "1.14.0",
+    "method": "MLS-MPM (P2G -> grid_op -> G2P) with corotated elasticity"
+  },
+  "scene": {
+    "domain": "[0,1]^3 unit cube",
+    "num_grids": 20,
+    "dx": 0.05,
+    "dt": 0.0005,
+    "num_steps": 4000,
+    "gravity": [
+      0.0,
+      -9.800000190734863,
+      0.0
+    ],
+    "bound": 3,
+    "boundary_condition": "freeslip",
+    "floor_y": 0.15000000000000002,
+    "eps": 1e-07,
+    "quality_preset": "low (experiments/configs/sim/low.yaml)"
+  },
+  "object": {
+    "shape": "sphere",
+    "shape_source": "configs/objects/sphere/geometry/default.yaml (radius=0.1)",
+    "center": [
+      0.5,
+      0.6,
+      0.5
+    ],
+    "radius": 0.1,
+    "resolution": 16,
+    "num_particles": 1736,
+    "particle_volume": 1.9531250000000005e-06,
+    "particle_mass": 0.0019531250000000004,
+    "total_mass_kg": 3.390625000000001
+  },
+  "material": {
+    "type": "corotated_elasticity",
+    "source": "UniPhy jelly preset: experiments/configs/env/blob/material/elasticity/corotated_jelly.yaml (E=1e5, nu=0.2) and experiments/configs/env/blob/jelly.yaml (rho=1e3)",
+    "mu": 41666.66666666667,
+    "lam": 27777.777777777777,
+    "rho": 1000.0,
+    "E_equivalent": 100000.0,
+    "nu_equivalent": 0.2
+  },
+  "results": {
+    "initial_com_y": 0.5999975204467773,
+    "min_com_y": 0.18020112812519073,
+    "final_com_y": 0.19369162619113922,
+    "final_min_particle_y": 0.16073057055473328,
+    "floor_contact_time_s": 0.275,
+    "free_fall_max_deviation": 0.0015159797072409886,
+    "free_fall_validated": true,
+    "floor_penetration": false,
+    "original_diameter": 0.2,
+    "final_extents_xyz": [
+      0.1750597357749939,
+      0.11126506328582764,
+      0.17505761981010437
+    ],
+    "max_extent_xyz": [
+      0.18099582195281982,
+      0.17333999276161194,
+      0.18099495768547058
+    ],
+    "final_deformation_stretch": 0.028904952108860016,
+    "max_deformation_stretch": 0.07413316518068314
+  }
+}
