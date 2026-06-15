@@ -334,6 +334,46 @@
     padding: 0.4rem 0.8rem;
   }
 
+  /* ── SIM VIDEO / DIAGNOSTICS ── */
+  .video-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 760px) {
+    .video-wrap { grid-template-columns: 1fr; }
+  }
+  .video-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .video-card video, .video-card img {
+    display: block;
+    width: 100%;
+    background: #0a1520;
+  }
+  .video-caption {
+    padding: 0.5rem 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--teal-mid);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ── RESULT BADGES ── */
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .result-pass { color: var(--teal); }
+  .result-fail { color: var(--orange); }
+
   /* ── FILE TREE ── */
   .file-tree {
     font-family: 'JetBrains Mono', monospace;
@@ -356,6 +396,7 @@
     font-size: 0.76rem;
     line-height: 1.75;
     overflow-x: auto;
+    white-space: pre-wrap;
   }
 
   .json-key { color: #7AB5AE; }
@@ -425,13 +466,13 @@
     <div class="header-label">avikravi · surgical-robotics-tissue-sim</div>
     <h1>Tissue Sim <span>Dataset Viewer</span></h1>
     <p class="header-meta">
-      Synthetic soft-tissue deformation dataset · Genesis MPM physics<br>
+      Synthetic soft-tissue deformation dataset · Genesis MPM + UniPhy MLS-MPM physics<br>
       Modeled after the <a href="https://huggingface.co/datasets/yizhouz/MASIV" style="color:var(--teal);text-decoration:none;">MASIV dataset</a> · Summer 2026 · Rice University
     </p>
     <div class="stats-row">
       <div class="stat"><div class="stat-num">1</div><div class="stat-label">Simulations</div></div>
-      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Camera Views</div></div>
-      <div class="stat"><div class="stat-num">240</div><div class="stat-label">Total Frames</div></div>
+      <div class="stat"><div class="stat-num">1,736</div><div class="stat-label">Particles</div></div>
+      <div class="stat"><div class="stat-num">400</div><div class="stat-label">Frames</div></div>
       <div class="stat"><div class="stat-num">3</div><div class="stat-label">ML Targets</div></div>
     </div>
   </div>
@@ -448,9 +489,9 @@
   <aside>
     <div class="sidebar-title">Simulations</div>
 
-    <div class="sim-item active" onclick="selectSim('000_elastic_sphere_poke')">
-      <div class="sim-id">000_elastic_sphere_poke</div>
-      <div class="sim-tag">elastic · box · poke · 4 cams</div>
+    <div class="sim-item active" onclick="selectSim('000_elastic_sphere_free_fall', this)">
+      <div class="sim-id">000_elastic_sphere_free_fall</div>
+      <div class="sim-tag">elastic · sphere · free fall · UniPhy MLS-MPM</div>
     </div>
 
     <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.4;pointer-events:none;">
@@ -489,97 +530,157 @@
 
 <script>
 const SIMULATIONS = {
-  "000_elastic_sphere_poke": {
-    id: "000_elastic_sphere_poke",
+  "000_elastic_sphere_free_fall": {
+    id: "000_elastic_sphere_free_fall",
     material: "elastic",
-    geometry: "box",
-    interaction: "poke",
-    metadata: {
+    geometry: "sphere",
+    interaction: "free_fall",
+    framework: {
+      name: "UniPhy MLS-MPM",
+      note: "Custom Warp re-implementation based on UniPhy_CVPR2025 (HimangiM/UniPhy_CVPR2025), distinct from the Genesis-based pipeline used elsewhere in this repo.",
+      reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
+      warp_version: "1.14.0",
+      method: "MLS-MPM (P2G -> grid_op -> G2P) with corotated elasticity",
+    },
+    scene: {
+      domain: "[0,1]^3 unit cube",
+      num_grids: 20,
+      dx: 0.05,
+      dt: 0.0005,
+      num_steps: 4000,
       gravity: -9.8,
-      dt: 0.01,
-      substeps: 32,
-      particle_size: 0.0015,
-      ground_friction: 0.8,
-      resolution: [800, 800],
-      fov: 45,
-      fps: 60,
-      frames: 400,
+      bound: 3,
+      boundary_condition: "freeslip",
+      floor_y: 0.15,
+      quality_preset: "low (experiments/configs/sim/low.yaml)",
     },
-    obj1: {
-      E: 58873.5,
-      nu: 0.261,
-      rho: 923.2,
-      material: "elastic",
-      geometry: "box",
-      surface: "Default",
-      geometry_scale: 0.4,
-      interaction: "poke",
-      initial_location: [0.0, 0.0, 0.2],
-      initial_velocity: [0.0, 0.0, 0.0],
-      initial_rotation: [1.0, 0.0, 0.0, 0.0],
+    object: {
+      shape: "sphere",
+      shape_source: "configs/objects/sphere/geometry/default.yaml (radius=0.1)",
+      radius: 0.1,
+      resolution: 16,
+      num_particles: 1736,
+      total_mass_kg: 3.39,
     },
-    cameras: [
-      { id: "cam_0", pos: [2.0, 0.0, 1.0], lookat: [0, 0, 0.2] },
-      { id: "cam_1", pos: [0.0, 2.0, 1.0], lookat: [0, 0, 0.2] },
-      { id: "cam_2", pos: [-2.0, 0.0, 1.0], lookat: [0, 0, 0.2] },
-      { id: "cam_3", pos: [0.0, -2.0, 1.0], lookat: [0, 0, 0.2] },
-    ],
+    material: {
+      type: "corotated elasticity (jelly)",
+      source: "UniPhy jelly preset: corotated_jelly.yaml (E=1e5, nu=0.2), jelly.yaml (rho=1e3)",
+      E: 100000.0,
+      nu: 0.2,
+      rho: 1000.0,
+      mu: 41666.67,
+      lam: 27777.78,
+    },
+    results: {
+      free_fall_validated: true,
+      free_fall_max_deviation: 0.00152,
+      floor_contact_time_s: 0.275,
+      floor_penetration: false,
+      final_com_y: 0.1937,
+      original_diameter: 0.2,
+      final_extents_xyz: [0.1751, 0.1113, 0.1751],
+      final_deformation_stretch: 0.0289,
+      max_deformation_stretch: 0.0741,
+    },
+    video: "data/simulations/000_elastic_sphere_free_fall/elastic_sphere_free_fall.mp4",
+    diagnostics_image: "data/simulations/000_elastic_sphere_free_fall/shape_diagnostics.png",
+    raw_metadata: {
+      id: "000_elastic_sphere_free_fall",
+      description: "Solid elastic sphere free-falling under gravity onto a floor boundary. Standalone MLS-MPM re-implementation of the UniPhy (CVPR 2025) / NCLaw simulator core, validated against analytical free fall (g=9.8 m/s^2) and floor non-penetration.",
+      framework: {
+        name: "uniphy_mpm",
+        reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
+        warp_version: "1.14.0",
+        method: "MLS-MPM (P2G -> grid_op -> G2P) with corotated elasticity",
+      },
+      scene: {
+        domain: "[0,1]^3 unit cube",
+        num_grids: 20,
+        dx: 0.05,
+        dt: 0.0005,
+        num_steps: 4000,
+        gravity: [0.0, -9.8, 0.0],
+        bound: 3,
+        boundary_condition: "freeslip",
+        floor_y: 0.15,
+        eps: 1e-7,
+        quality_preset: "low (experiments/configs/sim/low.yaml)",
+      },
+      object: {
+        shape: "sphere",
+        shape_source: "configs/objects/sphere/geometry/default.yaml (radius=0.1)",
+        center: [0.5, 0.6, 0.5],
+        radius: 0.1,
+        resolution: 16,
+        num_particles: 1736,
+        particle_volume: 1.953e-6,
+        particle_mass: 1.953e-3,
+        total_mass_kg: 3.3906,
+      },
+      material: {
+        type: "corotated_elasticity",
+        source: "UniPhy jelly preset: corotated_jelly.yaml (E=1e5, nu=0.2), jelly.yaml (rho=1e3)",
+        mu: 41666.67,
+        lam: 27777.78,
+        rho: 1000.0,
+        E_equivalent: 100000.0,
+        nu_equivalent: 0.2,
+      },
+      results: {
+        initial_com_y: 0.6,
+        min_com_y: 0.1802,
+        final_com_y: 0.1937,
+        final_min_particle_y: 0.1607,
+        floor_contact_time_s: 0.275,
+        free_fall_max_deviation: 0.001516,
+        free_fall_validated: true,
+        floor_penetration: false,
+        original_diameter: 0.2,
+        final_extents_xyz: [0.1751, 0.1113, 0.1751],
+        max_extent_xyz: [0.1810, 0.1733, 0.1810],
+        final_deformation_stretch: 0.0289,
+        max_deformation_stretch: 0.0741,
+      },
+    },
     files: [
-      { name: "000_elastic_sphere_poke/", type: "folder", children: [
-        { name: "frames/", type: "folder", children: [
-          { name: "cam_0/   (60 × frame_XXXX.png)", type: "file", size: "~2.6 MB" },
-          { name: "cam_1/   (60 × frame_XXXX.png)", type: "file", size: "~2.5 MB" },
-          { name: "cam_2/   (60 × frame_XXXX.png)", type: "file", size: "~3.9 MB" },
-          { name: "cam_3/   (60 × frame_XXXX.png)", type: "file", size: "~4.2 MB" },
-        ]},
-        { name: "videos/", type: "folder", children: [
-          { name: "cam_0.mp4", type: "file", size: "513 KB", highlight: true },
-          { name: "cam_1.mp4", type: "file", size: "516 KB", highlight: true },
-          { name: "cam_2.mp4", type: "file", size: "490 KB", highlight: true },
-          { name: "cam_3.mp4", type: "file", size: "484 KB", highlight: true },
-        ]},
-        { name: "metadata.json", type: "file", size: "1.1 KB", highlight: true },
+      { name: "000_elastic_sphere_free_fall/", type: "folder", children: [
+        { name: "elastic_sphere_free_fall.mp4", type: "file", size: "~92 KB", highlight: true },
+        { name: "metadata.json", type: "file", size: "2.4 KB", highlight: true },
+        { name: "shape_diagnostics.png", type: "file", size: "~49 KB" },
+        { name: "simulate.py", type: "file", size: "~21 KB" },
       ]}
     ]
   }
 };
 
-function renderSimScene(angle) {
-  // Simple SVG of tissue being poked from different angles
-  const scenes = [
-    // cam_0: front view
-    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
-      <ellipse cx="100" cy="160" rx="55" ry="12" fill="#028090" opacity="0.15"/>
-      <rect class="tissue" x="45" y="120" width="110" height="55" rx="6" fill="#028090" opacity="0.7"/>
-      <rect x="45" y="170" width="110" height="5" rx="2" fill="#016070" opacity="0.5"/>
-      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
-      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_0  front</text>
-    </svg>`,
-    // cam_1: side view
-    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
-      <ellipse cx="100" cy="162" rx="30" ry="10" fill="#028090" opacity="0.15"/>
-      <rect class="tissue" x="70" y="120" width="60" height="55" rx="6" fill="#028090" opacity="0.7"/>
-      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
-      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_1  left</text>
-    </svg>`,
-    // cam_2: back view
-    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
-      <rect class="tissue" x="45" y="120" width="110" height="55" rx="6" fill="#028090" opacity="0.6"/>
-      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
-      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_2  back</text>
-    </svg>`,
-    // cam_3: right view
-    `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="180" width="160" height="4" fill="#028090" opacity="0.4" rx="2"/>
-      <rect class="tissue" x="70" y="120" width="60" height="55" rx="6" fill="#028090" opacity="0.65"/>
-      <circle class="poker" cx="100" cy="55" r="16" fill="#7C6FD4" opacity="0.9"/>
-      <text x="100" y="18" text-anchor="middle" fill="#AACFCB" font-size="10" font-family="monospace">cam_3  right</text>
-    </svg>`,
-  ];
-  return scenes[angle] || scenes[0];
+// Recursively render a JS value as syntax-highlighted, indented "JSON" markup
+function renderJSONValue(v) {
+  if (typeof v === 'string') return `<span class="json-val-str">"${v}"</span>`;
+  if (typeof v === 'boolean') return `<span class="json-val-highlight">${v}</span>`;
+  return `<span class="json-val">${v}</span>`;
+}
+
+function renderJSONBlock(obj, indent = 0) {
+  const pad = '  '.repeat(indent + 1);
+  const padClose = '  '.repeat(indent);
+
+  if (Array.isArray(obj)) {
+    const allPrimitive = obj.every(v => typeof v !== 'object' || v === null);
+    if (allPrimitive) {
+      return `<span class="json-brace">[</span>${obj.map(renderJSONValue).join(', ')}<span class="json-brace">]</span>`;
+    }
+    const items = obj.map(v => `${pad}${renderJSONBlock(v, indent + 1)}`).join(',\n');
+    return `<span class="json-brace">[</span>\n${items}\n${padClose}<span class="json-brace">]</span>`;
+  }
+
+  if (obj !== null && typeof obj === 'object') {
+    const entries = Object.entries(obj).map(([k, v]) =>
+      `${pad}<span class="json-key">"${k}"</span>: ${renderJSONBlock(v, indent + 1)}`
+    );
+    return `<span class="json-brace">{</span>\n${entries.join(',\n')}\n${padClose}<span class="json-brace">}</span>`;
+  }
+
+  return renderJSONValue(obj);
 }
 
 function renderFileTree(files, indent = 0) {
@@ -597,9 +698,9 @@ function renderFileTree(files, indent = 0) {
   return html;
 }
 
-function selectSim(id) {
-  document.querySelectorAll('.sim-item').forEach(el => el.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+function selectSim(id, el) {
+  document.querySelectorAll('.sim-item').forEach(item => item.classList.remove('active'));
+  if (el) el.classList.add('active');
 
   const sim = SIMULATIONS[id];
   if (!sim) return;
@@ -608,14 +709,49 @@ function selectSim(id) {
   view.className = 'fade-in';
   void view.offsetWidth;
 
+  const r = sim.results;
+  const ffBadge = r.free_fall_validated
+    ? `<span class="result-badge result-pass">✓ pass</span>`
+    : `<span class="result-badge result-fail">✗ fail</span>`;
+  const penBadge = r.floor_penetration
+    ? `<span class="result-badge result-fail">✗ detected</span>`
+    : `<span class="result-badge result-pass">✓ none</span>`;
+
   view.innerHTML = `
     <div class="sim-header">
       <div>
         <div class="sim-title">Simulation <span>${sim.id}</span></div>
         <div style="margin-top:0.4rem;">
-          <span class="tag tag-elastic">${sim.obj1.material}</span>
-          <span class="tag tag-poke">${sim.obj1.interaction}</span>
-          <span class="tag tag-4cam">4 cameras</span>
+          <span class="tag tag-elastic">${sim.material.type}</span>
+          <span class="tag tag-poke">${sim.geometry} · ${sim.interaction}</span>
+          <span class="tag tag-4cam">${sim.framework.name}</span>
+        </div>
+        <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--teal-mid);max-width:62ch;line-height:1.6;">
+          ${sim.raw_metadata.description}
+        </p>
+      </div>
+    </div>
+
+    <!-- FRAMEWORK NOTE -->
+    <div class="section">
+      <div class="section-header">⚡ Framework</div>
+      <div class="section-body">
+        <div class="meta-grid">
+          <div class="meta-card">
+            <div class="meta-key">Method</div>
+            <div class="meta-val">${sim.framework.method}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Warp Version</div>
+            <div class="meta-val">${sim.framework.warp_version}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Reference</div>
+            <div class="meta-val"><a href="${sim.framework.reference}" target="_blank" style="color:var(--teal);text-decoration:none;">UniPhy_CVPR2025 ↗</a></div>
+          </div>
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.72rem;color:var(--muted);line-height:1.6;">
+          ${sim.framework.note}
         </div>
       </div>
     </div>
@@ -627,31 +763,42 @@ function selectSim(id) {
         <div class="meta-grid">
           <div class="meta-card">
             <div class="meta-key">E — Young's Modulus</div>
-            <div class="meta-val highlight">${sim.obj1.E.toLocaleString()} Pa</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Stiffness of tissue</div>
+            <div class="meta-val highlight">${sim.material.E.toLocaleString()} Pa</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Stiffness</div>
           </div>
           <div class="meta-card">
             <div class="meta-key">nu — Poisson's Ratio</div>
-            <div class="meta-val highlight">${sim.obj1.nu}</div>
+            <div class="meta-val highlight">${sim.material.nu}</div>
             <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Compressibility factor</div>
           </div>
           <div class="meta-card">
             <div class="meta-key">rho — Density</div>
-            <div class="meta-val highlight">${sim.obj1.rho} kg/m³</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Similar to human tissue</div>
+            <div class="meta-val highlight">${sim.material.rho.toLocaleString()} kg/m³</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Water-like</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">Material Type</div>
-            <div class="meta-val">${sim.obj1.material}</div>
+            <div class="meta-key">mu — Lamé 1st parameter</div>
+            <div class="meta-val">${sim.material.mu.toLocaleString()} Pa</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">lambda — Lamé 2nd parameter</div>
+            <div class="meta-val">${sim.material.lam.toLocaleString()} Pa</div>
           </div>
           <div class="meta-card">
             <div class="meta-key">Geometry</div>
-            <div class="meta-val">${sim.obj1.geometry} · scale ${sim.obj1.geometry_scale}</div>
+            <div class="meta-val highlight-orange">${sim.object.shape} · radius ${sim.object.radius}</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">Interaction</div>
-            <div class="meta-val highlight-orange">${sim.obj1.interaction}</div>
+            <div class="meta-key">Particles</div>
+            <div class="meta-val">${sim.object.num_particles.toLocaleString()}</div>
           </div>
+          <div class="meta-card">
+            <div class="meta-key">Total Mass</div>
+            <div class="meta-val">${sim.object.total_mass_kg} kg</div>
+          </div>
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.7rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">
+          source: ${sim.material.source}
         </div>
       </div>
     </div>
@@ -662,53 +809,94 @@ function selectSim(id) {
       <div class="section-body">
         <div class="meta-grid">
           <div class="meta-card">
-            <div class="meta-key">dt</div>
-            <div class="meta-val">${sim.metadata.dt}</div>
+            <div class="meta-key">Domain</div>
+            <div class="meta-val">${sim.scene.domain}</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">substeps</div>
-            <div class="meta-val">${sim.metadata.substeps}</div>
+            <div class="meta-key">Grid Resolution</div>
+            <div class="meta-val">${sim.scene.num_grids}³ (dx=${sim.scene.dx})</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">dt</div>
+            <div class="meta-val">${sim.scene.dt}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">num_steps</div>
+            <div class="meta-val">${sim.scene.num_steps} (${(sim.scene.num_steps * sim.scene.dt).toFixed(2)} s)</div>
           </div>
           <div class="meta-card">
             <div class="meta-key">gravity</div>
-            <div class="meta-val">${sim.metadata.gravity} m/s²</div>
+            <div class="meta-val">${sim.scene.gravity} m/s²</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">resolution</div>
-            <div class="meta-val">${sim.metadata.resolution[0]} × ${sim.metadata.resolution[1]}</div>
+            <div class="meta-key">Boundary</div>
+            <div class="meta-val">${sim.scene.boundary_condition} (${sim.scene.bound} cells)</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">fps</div>
-            <div class="meta-val">${sim.metadata.fps}</div>
+            <div class="meta-key">Floor y</div>
+            <div class="meta-val">${sim.scene.floor_y}</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">frames</div>
-            <div class="meta-val">${sim.metadata.frames}</div>
+            <div class="meta-key">Quality Preset</div>
+            <div class="meta-val">${sim.scene.quality_preset}</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- CAMERA VIEWS -->
+    <!-- SIMULATION VIDEO -->
     <div class="section">
-      <div class="section-header">📷 Camera Views (4 of 11 planned)</div>
+      <div class="section-header">🎬 Simulation Render</div>
       <div class="section-body">
-        <div class="camera-grid">
-          ${sim.cameras.map((cam, i) => `
-            <div class="camera-card">
-              <div class="camera-label">
-                <span>${cam.id}</span>
-                <span style="color:var(--teal);font-size:0.65rem;">60 frames · 800×800</span>
-              </div>
-              <div class="camera-preview">
-                ${renderSimScene(i)}
-              </div>
-              <div class="cam-pos">pos: [${cam.pos.join(', ')}]  →  lookat: [${cam.lookat.join(', ')}]</div>
-            </div>
-          `).join('')}
+        <div class="video-wrap">
+          <div class="video-card">
+            <video src="${sim.video}" controls loop muted autoplay playsinline></video>
+            <div class="video-caption">elastic_sphere_free_fall.mp4 — fall, impact, and settle (2.0s sim time)</div>
+          </div>
+          <div class="video-card">
+            <img src="${sim.diagnostics_image}" alt="Shape diagnostics plot">
+            <div class="video-caption">shape_diagnostics.png — bounding-box extents and deformation magnitude over time</div>
+          </div>
         </div>
-        <div style="margin-top:0.75rem;font-size:0.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">
-          ℹ  Animations are schematic previews. Actual frames are stored as mp4 + per-frame PNG in the repo.
+      </div>
+    </div>
+
+    <!-- VALIDATION RESULTS -->
+    <div class="section">
+      <div class="section-header">✅ Physics Validation</div>
+      <div class="section-body">
+        <div class="meta-grid">
+          <div class="meta-card">
+            <div class="meta-key">Free-fall vs analytical</div>
+            <div class="meta-val">${ffBadge}</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">max deviation ${r.free_fall_max_deviation}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Floor penetration</div>
+            <div class="meta-val">${penBadge}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Floor contact time</div>
+            <div class="meta-val">${r.floor_contact_time_s} s</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Final COM height</div>
+            <div class="meta-val">${r.final_com_y}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Original diameter</div>
+            <div class="meta-val">${r.original_diameter}</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Final extents (x, y, z)</div>
+            <div class="meta-val">${r.final_extents_xyz.map(v => v.toFixed(3)).join(', ')}</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">vertical extent ~45% of original diameter — flattened on the floor</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-key">Deformation (final / max)</div>
+            <div class="meta-val">${r.final_deformation_stretch.toFixed(3)} / ${r.max_deformation_stretch.toFixed(3)}</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">mean |singular_value(F) - 1|, 0 = undeformed</div>
+          </div>
         </div>
       </div>
     </div>
@@ -727,37 +915,14 @@ function selectSim(id) {
     <div class="section">
       <div class="section-header">{ } metadata.json</div>
       <div class="section-body">
-        <div class="json-block">
-<span class="json-brace">{</span>
-  <span class="json-key">"gravity"</span>: <span class="json-val">-9.8</span>,
-  <span class="json-key">"dt"</span>: <span class="json-val">0.01</span>,
-  <span class="json-key">"substeps"</span>: <span class="json-val">32</span>,
-  <span class="json-key">"resolution"</span>: <span class="json-val">[800, 800]</span>,
-  <span class="json-key">"fov"</span>: <span class="json-val">45</span>,
-  <span class="json-key">"fps"</span>: <span class="json-val">60</span>,
-  <span class="json-key">"camera_centers"</span>: <span class="json-val">[[2.0, 0.0, 1.0], [0.0, 2.0, 1.0], ...]</span>,
-  <span class="json-key">"camera_lookats"</span>: <span class="json-val">[[0, 0, 0.2], [0, 0, 0.2], ...]</span>,
-  <span class="json-key">"obj1"</span>: <span class="json-brace">{</span>
-    <span class="json-key">"E"</span>: <span class="json-val-highlight">58873.5</span>,
-    <span class="json-key">"nu"</span>: <span class="json-val-highlight">0.261</span>,
-    <span class="json-key">"rho"</span>: <span class="json-val-highlight">923.2</span>,
-    <span class="json-key">"material"</span>: <span class="json-val-str">"elastic"</span>,
-    <span class="json-key">"geometry"</span>: <span class="json-val-str">"box"</span>,
-    <span class="json-key">"interaction"</span>: <span class="json-val-str">"poke"</span>,
-    <span class="json-key">"geometry_scale"</span>: <span class="json-val">0.4</span>,
-    <span class="json-key">"initial_location"</span>: <span class="json-val">[0.0, 0.0, 0.2]</span>,
-    <span class="json-key">"initial_velocity"</span>: <span class="json-val">[0.0, 0.0, 0.0]</span>,
-    <span class="json-key">"initial_rotation"</span>: <span class="json-val">[1.0, 0.0, 0.0, 0.0]</span>
-  <span class="json-brace">}</span>
-<span class="json-brace">}</span>
-        </div>
+        <div class="json-block">${renderJSONBlock(sim.raw_metadata)}</div>
       </div>
     </div>
   `;
 }
 
 // Init
-selectSim('000_elastic_sphere_poke');
+selectSim('000_elastic_sphere_free_fall', document.querySelector('.sim-item.active'));
 </script>
 </body>
 </html>
