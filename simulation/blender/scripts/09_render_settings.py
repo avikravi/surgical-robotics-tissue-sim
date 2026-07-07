@@ -10,7 +10,12 @@ for device in cycles_prefs.devices:
     device.use = True
 scene.cycles.device = 'GPU'
 
-scene.cycles.samples = 256
+# Raised from 256: measured baseline inter-frame noise on the floor/table (mean abs diff
+# between two nearly-static consecutive frames) was already low at 256, but bumping samples
+# further cuts residual Monte Carlo variance in the bump-mapped floor/table specular response,
+# which is what an animated sequence perceives as per-frame "flashing" even when a single
+# still frame looks clean.
+scene.cycles.samples = 384
 scene.cycles.use_denoising = True
 scene.cycles.denoiser = 'OPTIX'
 scene.cycles.max_bounces = 8
@@ -45,4 +50,4 @@ wout = wnodes.new("ShaderNodeOutputWorld")
 wout.location = (300, 0)
 wlinks.new(bg.outputs['Background'], wout.inputs['Surface'])
 
-print("Render settings configured: Cycles + OptiX, 256 samples, denoising on, AgX, reduced ambient/exposure for shadow definition")
+print(f"Render settings configured: Cycles + OptiX, {scene.cycles.samples} samples, denoising on, AgX, reduced ambient/exposure for shadow definition")

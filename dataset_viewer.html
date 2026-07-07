@@ -587,7 +587,7 @@ const SIMULATIONS = {
     diagnostics_caption: "shape_diagnostics_001.png — bounding-box extents and deformation magnitude over time (computed from GtX.pt/GtF.pt)",
     raw_metadata: {
       id: "001_elastic_sphere_tissue_free_fall_test",
-      description: "Solid elastic sphere (tissue-realistic Lamé parameters) free-falling under gravity onto a floor boundary. Simulated via UniPhy's (CVPR 2025) Taichi MLS-MPM data_process pipeline (dataset_generate.py), validated against analytical free fall (g=9.8 m/s^2) and floor non-penetration. Rendered photorealistically in Blender (Cycles + OptiX) with tissue material, three-point lighting, room environment, and stationary surgical instruments.",
+      description: "Solid elastic sphere (tissue-realistic Lamé parameters) free-falling under gravity onto a floor boundary. Simulated via UniPhy's (CVPR 2025) Taichi MLS-MPM data_process pipeline (dataset_generate.py), validated against analytical free fall (g=9.8 m/s^2) and floor non-penetration. Rendered photorealistically in Blender (Cycles + OptiX) with tissue material, three-point lighting, and room environment.",
       framework: {
         name: "uniphy_mpm_taichi",
         reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
@@ -664,8 +664,6 @@ const SIMULATIONS = {
           { name: "04_surface_materials.py", type: "file", size: "~8.2 KB" },
           { name: "05_lighting.py", type: "file", size: "~1.8 KB" },
           { name: "06_camera.py", type: "file", size: "~1.3 KB" },
-          { name: "07_wall_decoration.py", type: "file", size: "~2.3 KB" },
-          { name: "08_surgical_instruments.py", type: "file", size: "~2.8 KB" },
           { name: "09_render_settings.py", type: "file", size: "~1.5 KB" },
         ]},
       ]},

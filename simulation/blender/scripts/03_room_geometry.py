@@ -5,8 +5,18 @@ for obj_name in list(bpy.data.objects.keys()):
     if obj_name.startswith(("RoomFloor", "RoomWall", "Table")):
         bpy.data.objects.remove(bpy.data.objects[obj_name], do_unlink=True)
 
-ROOM_SIZE = 4.0
-ROOM_HEIGHT = 3.0
+# --- Also purge leftover surgical tool objects from older runs (instrument script removed) ---
+for obj_name in list(bpy.data.objects.keys()):
+    if obj_name.startswith(("Scalpel", "Forceps", "InstrumentTray")):
+        bpy.data.objects.remove(bpy.data.objects[obj_name], do_unlink=True)
+
+# Sized so the room fully covers the camera frustum at 06_camera.py's current framing
+# (DIST_SCALE=1.65, LENS=70mm) — verified via raycast against the actual camera frustum:
+# ROOM_SIZE=4.0 leaves the room's back/left walls too narrow, exposing the flat world
+# background at the top of frame (the "grey bar" bug). 9.0 clears it with ~24% margin
+# over the computed 7.23 minimum; ROOM_HEIGHT keeps the original 0.75 height/size ratio.
+ROOM_SIZE = 9.0
+ROOM_HEIGHT = 6.75
 TABLE_HEIGHT = 0.0164  # matches sphere's resting bottom edge (Location Z 0.0584 - Scale Z 0.042)
 
 # --- Floor ---

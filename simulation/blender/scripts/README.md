@@ -13,13 +13,11 @@ only visualizes precomputed keyframe data (`sphere_keyframes.npy`).
 |---|---|
 | `01_animate_sphere.py` | Loads keyframes, creates + animates TissueSphere and Ground |
 | `02_tissue_material.py` | Subtle organic tissue shader (color/roughness variation, no bump) |
-| `03_room_geometry.py` | Floor, back/left walls, table (height matched to sphere rest position) |
+| `03_room_geometry.py` | Floor, back/left walls, table (height matched to sphere rest position); also purges any leftover surgical tool objects from older runs |
 | `04_surface_materials.py` | Wood table, light blue walls, tile floor |
 | `05_lighting.py` | Three-point area light rig (key/fill/rim), tuned to avoid overexposure |
-| `06_camera.py` | HeroCamera, balanced wide framing, tracks table center |
-| `07_wall_decoration.py` | Picture frame decoration, positioned clear of light rig |
-| `08_surgical_instruments.py` | Stationary scalpel, forceps, instrument tray next to table |
-| `09_render_settings.py` | Cycles + OptiX, 256 samples, denoising, AgX, world ambient |
+| `06_camera.py` | HeroCamera, ~24%-frame-height sphere framing, tracks table center |
+| `09_render_settings.py` | Cycles + OptiX, 384 samples, denoising, AgX, world ambient |
 
 After running all scripts, render the full animation with **Ctrl+F12**
 (PNG sequence to `simulation/renders/`), then convert to GIF:

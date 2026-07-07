@@ -124,7 +124,12 @@ output = nodes.new("ShaderNodeOutputMaterial"); output.location = (900, 0)
 bsdf = nodes.new("ShaderNodeBsdfPrincipled"); bsdf.location = (600, 0)
 tex_coord = nodes.new("ShaderNodeTexCoord"); tex_coord.location = (-900, 0)
 mapping = nodes.new("ShaderNodeMapping"); mapping.location = (-700, 0)
-mapping.inputs['Scale'].default_value = (6.0, 6.0, 1.0)
+# Object-space coords are real meters (RoomFloor's scale is baked in via transform_apply),
+# so tiles_per_meter = mapping.Scale * brick.Scale exactly, independent of ROOM_SIZE.
+# 3.5 -> ~28.6cm tiles (a common real floor-tile size), down from 6.0 (~16.7cm) — coarser
+# margin against aliasing now that ROOM_SIZE=9.0 puts far more tile repeats in frame at once
+# than the original ROOM_SIZE=4.0 did.
+mapping.inputs['Scale'].default_value = (3.5, 3.5, 1.0)
 
 brick = nodes.new("ShaderNodeTexBrick")
 brick.location = (-500, 200)
@@ -155,8 +160,11 @@ mix_final.inputs['Fac'].default_value = 0.3
 
 bump_floor = nodes.new("ShaderNodeBump")
 bump_floor.location = (300, -200)
-bump_floor.inputs['Strength'].default_value = 0.2
-bump_floor.inputs['Distance'].default_value = 0.005
+# Strength reduced and Distance rescaled to keep the same ~3% of tile-period ratio as before,
+# now that the tile period grew from ~0.167m to ~0.286m (see mapping.Scale above) — an
+# unscaled Distance would under-sample the new, larger tile features.
+bump_floor.inputs['Strength'].default_value = 0.15
+bump_floor.inputs['Distance'].default_value = 0.0086
 
 links.new(tex_coord.outputs['Object'], mapping.inputs['Vector'])
 links.new(mapping.outputs['Vector'], brick.inputs['Vector'])
