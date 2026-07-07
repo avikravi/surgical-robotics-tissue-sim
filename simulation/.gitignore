@@ -211,3 +211,19 @@ output/002_plasticine_sphere_free_fall_test/GtC.pt
 output/002_plasticine_sphere_free_fall_test/GtF.pt
 output/002_plasticine_sphere_free_fall_test/GtFtmp.pt
 output/002_plasticine_sphere_free_fall_test/GtStress.pt
+output/003_newtonian_sphere_free_fall_test/GtC.pt
+output/003_newtonian_sphere_free_fall_test/GtF.pt
+output/003_newtonian_sphere_free_fall_test/GtFtmp.pt
+output/003_newtonian_sphere_free_fall_test/GtStress.pt
+output/004_sand_sphere_free_fall_test/GtC.pt
+output/004_sand_sphere_free_fall_test/GtF.pt
+output/004_sand_sphere_free_fall_test/GtFtmp.pt
+output/004_sand_sphere_free_fall_test/GtStress.pt
+output/005_non_newtonian_sphere_free_fall_test/GtC.pt
+output/005_non_newtonian_sphere_free_fall_test/GtF.pt
+output/005_non_newtonian_sphere_free_fall_test/GtFtmp.pt
+output/005_non_newtonian_sphere_free_fall_test/GtStress.pt
+
+# Hydra's own run-log directory (config snapshot + dataset_generate.log per run) —
+# not simulation output, gitignored globally rather than per-run-timestamp.
+data_process/outputs/

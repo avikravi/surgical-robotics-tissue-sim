@@ -1,0 +1,11 @@
+material_type: MPMSimulator.drucker_prager
+object_material: sand
+rho: 928.8232
+velocity: [0, 0, 0]
+mu: 2400.
+lam: 2400.
+yield_stress: 1.
+plastic_viscosity: 1.
+friction_alpha: 0.01
+inv_dt: 4800.
+inv_frame_dt: 24.
