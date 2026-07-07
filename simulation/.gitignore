@@ -207,3 +207,7 @@ output/001_elastic_sphere_tissue_free_fall_test/GtC.pt
 output/001_elastic_sphere_tissue_free_fall_test/GtF.pt
 output/001_elastic_sphere_tissue_free_fall_test/GtFtmp.pt
 output/001_elastic_sphere_tissue_free_fall_test/GtStress.pt
+output/002_plasticine_sphere_free_fall_test/GtC.pt
+output/002_plasticine_sphere_free_fall_test/GtF.pt
+output/002_plasticine_sphere_free_fall_test/GtFtmp.pt
+output/002_plasticine_sphere_free_fall_test/GtStress.pt
