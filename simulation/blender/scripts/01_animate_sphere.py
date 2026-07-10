@@ -1,8 +1,15 @@
 import bpy
 import numpy as np
+import os
 
 # --- Load the keyframe data ---
-npy_path = "/home/elec594/Desktop/surgical-robotics-tissue-sim/simulation/output/001_elastic_sphere_tissue_free_fall_test/sphere_keyframes.npy"
+# SIM_OUTPUT_DIR lets a headless batch-render driver point this at any sim's output folder;
+# manual use from Blender's Scripting tab (no env var set) still defaults to 001 as before.
+sim_output_dir = os.environ.get(
+    "SIM_OUTPUT_DIR",
+    "/home/elec594/Desktop/surgical-robotics-tissue-sim/simulation/output/001_elastic_sphere_tissue_free_fall_test",
+)
+npy_path = f"{sim_output_dir}/sphere_keyframes.npy"
 data = np.load(npy_path)  # shape (40, 6): center_x,y,z, extent_x,y,z (sim coordinates)
 
 # --- Clean up any existing TissueSphere / Ground / Cube objects first (safe re-run) ---
@@ -30,10 +37,13 @@ for i, row in enumerate(data):
     sphere.keyframe_insert(data_path="location", frame=frame)
     sphere.keyframe_insert(data_path="scale", frame=frame)
 
-# --- Add a ground plane ---
-bpy.ops.mesh.primitive_plane_add(size=4, location=(0.55, 0.0, 0.0))
-plane = bpy.context.active_object
-plane.name = "Ground"
+# NOTE: this script used to also add a small 4x4 "Ground" placeholder plane here, before
+# 03_room_geometry.py's real RoomFloor existed. It was never removed and never given a
+# material, so it sat exactly coplanar with RoomFloor (both at z=0) and z-fought with it,
+# rendering as a hard black wedge wherever Cycles picked the unmaterialed "Ground" face
+# (Cycles renders objects with no material as pure black) instead of RoomFloor's tile
+# shader. The cleanup loop above still removes it by name so any older .blend file that
+# still has a leftover "Ground" object gets fixed on re-run.
 
 scene.frame_set(1)
 print("Done — sphere keyframed across", data.shape[0], "frames, scene cleaned of duplicates")
