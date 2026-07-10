@@ -1,9 +1,16 @@
+import argparse
 import numpy as np
 import torch
 
-SIM_DIR = "output/001_elastic_sphere_tissue_free_fall_test"
-NUM_FRAMES = 2000
-NUM_SAMPLES = 40
+parser = argparse.ArgumentParser()
+parser.add_argument("sim_dir", nargs="?", default="output/001_elastic_sphere_tissue_free_fall_test")
+parser.add_argument("--num-frames", type=int, default=2000)
+parser.add_argument("--num-samples", type=int, default=40)
+args = parser.parse_args()
+
+SIM_DIR = args.sim_dir
+NUM_FRAMES = args.num_frames
+NUM_SAMPLES = args.num_samples
 
 x = torch.load(f"{SIM_DIR}/GtX.pt", map_location="cpu").numpy()
 x = x[:NUM_FRAMES]
