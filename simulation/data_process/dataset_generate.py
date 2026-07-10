@@ -29,13 +29,18 @@ def main(cfg: omegaconf.DictConfig):
     mpmwrapper_gt.simulator_variables_initialize()
 
     substep_gt = mpmwrapper_gt.simulator.n_substeps[None]
+    # Must cover every substep the get_*_gt kernels below will write (indices 0..num_sim_steps*substep_gt+1).
+    # Was hardcoded to 4096, which silently corrupted memory (CUDA_ERROR_ILLEGAL_ADDRESS) for any
+    # material/timestep combination needing more substeps than that (e.g. a stiffer material run
+    # at a smaller dt to satisfy CFL, which raises n_substeps per frame).
+    buffer_len = num_sim_steps * substep_gt + 2
 
-    particle_x = torch.zeros([1024, 4096, 3], dtype=torch.float32).to(device)
-    particle_v = torch.zeros([1024, 4096, 3], dtype=torch.float32).to(device)
-    particle_C = torch.zeros([1024, 4096, 3, 3], dtype=torch.float32).to(device)
-    particle_F = torch.zeros([1024, 4096, 3, 3], dtype=torch.float32).to(device)
-    particle_Ftmp = torch.zeros([1024, 4096, 3, 3], dtype=torch.float32).to(device)
-    particle_stress = torch.zeros([1024, 4096, 3, 3], dtype=torch.float32).to(device)
+    particle_x = torch.zeros([1024, buffer_len, 3], dtype=torch.float32).to(device)
+    particle_v = torch.zeros([1024, buffer_len, 3], dtype=torch.float32).to(device)
+    particle_C = torch.zeros([1024, buffer_len, 3, 3], dtype=torch.float32).to(device)
+    particle_F = torch.zeros([1024, buffer_len, 3, 3], dtype=torch.float32).to(device)
+    particle_Ftmp = torch.zeros([1024, buffer_len, 3, 3], dtype=torch.float32).to(device)
+    particle_stress = torch.zeros([1024, buffer_len, 3, 3], dtype=torch.float32).to(device)
 
     # Simulation
     cfl_flag = False

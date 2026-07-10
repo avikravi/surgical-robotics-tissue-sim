@@ -74,12 +74,25 @@ class MPMWrapper:
                                       material=self.material, dx=self.dx, inv_dx=self.inv_dx,
                                       particle_layout=self.particle, gravity=simulator_cfg['gravity'],
                                       cuda_chunk_size=self.cuda_chunk_size)
+        # Floor behavior depends on the constitutive model: pure elasticity and viscous fluid
+        # aren't supposed to hold a permanent shape at the contact point, so they need to be
+        # able to leave the floor again (rebound / keep sliding) once internal stress or flow
+        # pushes them away from it. Plastic materials (von_mises, drucker_prager) are the
+        # opposite -- once they yield, they're supposed to keep whatever shape they yielded
+        # into, including staying put wherever they first touched down. Each dataset_generate.py
+        # run only ever simulates one material, so this is a single scene-wide choice, not a
+        # per-particle one.
+        rebounding_material_types = {"MPMSimulator.elasticity", "MPMSimulator.viscous_fluid"}
+        run_material_types = {objects[k]['material']['material_type'] for k in objects.keys()}
+        floor_surface = (MPMSimulator.surface_separate if run_material_types <= rebounding_material_types
+                          else MPMSimulator.surface_sticky)
+
         BC = simulator_cfg['BC']
         for bc in BC:
             if "ground" in bc:
-                self.simulator.add_surface_collider(BC[bc][0], BC[bc][1], MPMSimulator.surface_sticky)
+                self.simulator.add_surface_collider(BC[bc][0], BC[bc][1], floor_surface)
             elif "cylinder" in bc:
-                self.simulator.add_cylinder_collider(BC[bc][0], BC[bc][1], BC[bc][2], MPMSimulator.surface_sticky)
+                self.simulator.add_cylinder_collider(BC[bc][0], BC[bc][1], BC[bc][2], floor_surface)
 
     def load_points(self, path, num_points):
         all_points = []
