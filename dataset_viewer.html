@@ -251,29 +251,29 @@
   /* ── METADATA GRID ── */
   .meta-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.6rem;
   }
 
   .meta-card {
     background: rgba(0,0,0,0.2);
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 7px;
-    padding: 0.75rem;
+    padding: 0.65rem 0.75rem;
   }
 
   .meta-key {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     margin-bottom: 0.3rem;
   }
 
   .meta-val {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--white);
   }
@@ -281,67 +281,54 @@
   .meta-val.highlight { color: var(--teal); }
   .meta-val.highlight-orange { color: var(--orange); }
 
-  /* ── CAMERA GRID ── */
-  .camera-grid {
+  /* ── PAIR GRID ── */
+  .pair-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  @media (max-width: 900px) {
+    .pair-grid { grid-template-columns: 1fr; }
   }
 
-  .camera-card {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 8px;
+  .variant-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
     overflow: hidden;
-    transition: border-color 0.2s;
   }
 
-  .camera-card:hover { border-color: rgba(0,180,166,0.4); }
-
-  .camera-label {
-    padding: 0.5rem 0.8rem;
-    background: rgba(0,0,0,0.3);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--teal-mid);
+  .variant-header {
+    padding: 0.9rem 1.1rem;
     display: flex;
+    align-items: baseline;
     justify-content: space-between;
-    align-items: center;
+    gap: 0.5rem;
   }
+  .variant-header.a { background: rgba(124,111,212,0.12); border-bottom: 1px solid rgba(124,111,212,0.25); }
+  .variant-header.b { background: rgba(245,166,35,0.12); border-bottom: 1px solid rgba(245,166,35,0.25); }
 
-  .camera-preview {
-    width: 100%;
-    aspect-ratio: 1;
-    background: linear-gradient(135deg, #0a1520 0%, #0f2030 50%, #0a1825 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
+  .variant-label {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
   }
+  .variant-header.a .variant-label { color: var(--purple); }
+  .variant-header.b .variant-label { color: var(--orange); }
 
-  /* Animated simulation preview placeholder */
-  .camera-preview svg {
-    width: 80%;
-    height: 80%;
-    opacity: 0.85;
-  }
-
-  .cam-pos {
+  .variant-id {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     color: var(--muted);
-    padding: 0.4rem 0.8rem;
   }
 
-  /* ── SIM VIDEO / DIAGNOSTICS ── */
+  .variant-body { padding: 1.1rem; }
+
   .video-wrap {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  @media (max-width: 760px) {
-    .video-wrap { grid-template-columns: 1fr; }
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
   }
   .video-card {
     background: rgba(0,0,0,0.3);
@@ -349,15 +336,15 @@
     border-radius: 8px;
     overflow: hidden;
   }
-  .video-card video, .video-card img {
+  .video-card img {
     display: block;
     width: 100%;
     background: #0a1520;
   }
   .video-caption {
-    padding: 0.5rem 0.8rem;
+    padding: 0.4rem 0.6rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     color: var(--teal-mid);
     border-top: 1px solid rgba(255,255,255,0.06);
   }
@@ -377,24 +364,24 @@
   /* ── FILE TREE ── */
   .file-tree {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.9;
+    font-size: 0.72rem;
+    line-height: 1.85;
   }
 
   .tree-folder { color: var(--teal); }
   .tree-file { color: #AACFCB; }
   .tree-file.highlight { color: var(--orange); }
   .tree-indent { padding-left: 1.2rem; }
-  .tree-size { color: var(--muted); font-size: 0.68rem; margin-left: 0.5rem; }
+  .tree-size { color: var(--muted); font-size: 0.65rem; margin-left: 0.5rem; }
 
   /* ── JSON VIEWER ── */
   .json-block {
     background: var(--navy2);
     border-radius: 6px;
-    padding: 1rem 1.2rem;
+    padding: 0.8rem 1rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.76rem;
-    line-height: 1.75;
+    font-size: 0.7rem;
+    line-height: 1.7;
     overflow-x: auto;
     white-space: pre-wrap;
   }
@@ -405,15 +392,28 @@
   .json-val-highlight { color: var(--teal); font-weight: 600; }
   .json-brace { color: var(--muted); }
 
-  /* ── EMPTY STATE ── */
-  .empty {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--muted);
+  /* ── COMPARE CALLOUT ── */
+  .compare-callout {
+    background: rgba(0,180,166,0.06);
+    border: 1px solid rgba(0,180,166,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.82rem;
+    color: var(--teal-mid);
+    line-height: 1.6;
   }
+  .compare-callout b { color: var(--white); }
 
-  .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; }
-  .empty p { font-size: 0.85rem; }
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,180,166,0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,180,166,0.4); }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.25s ease forwards; }
 
   /* ── COMING SOON BADGE ── */
   .coming-soon {
@@ -428,35 +428,6 @@
     padding: 0.15rem 0.5rem;
     border-radius: 3px;
   }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(0,180,166,0.2); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(0,180,166,0.4); }
-
-  /* Animations */
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  .fade-in { animation: fadeIn 0.25s ease forwards; }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── GROUND PLANE ANIMATION ── */
-  .sim-scene { animation: none; }
-  .tissue { animation: squish 3s ease-in-out infinite; transform-origin: center bottom; }
-  .poker { animation: poke 3s ease-in-out infinite; }
-
-  @keyframes squish {
-    0%, 40% { transform: scaleY(1) scaleX(1); }
-    60% { transform: scaleY(0.72) scaleX(1.2); }
-    80%, 100% { transform: scaleY(1) scaleX(1); }
-  }
-
-  @keyframes poke {
-    0%, 30% { transform: translateY(0); }
-    60% { transform: translateY(72px); }
-    80%, 100% { transform: translateY(0); }
-  }
 </style>
 </head>
 <body>
@@ -466,14 +437,14 @@
     <div class="header-label">avikravi · surgical-robotics-tissue-sim</div>
     <h1>Tissue Sim <span>Dataset Viewer</span></h1>
     <p class="header-meta">
-      Synthetic soft-tissue deformation dataset · Genesis MPM + UniPhy MLS-MPM physics<br>
+      Synthetic soft-tissue deformation dataset · UniPhy MLS-MPM (Taichi) physics<br>
       Modeled after the <a href="https://huggingface.co/datasets/yizhouz/MASIV" style="color:var(--teal);text-decoration:none;">MASIV dataset</a> · Summer 2026 · Rice University
     </p>
     <div class="stats-row">
-      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Simulations</div></div>
-      <div class="stat"><div class="stat-num">1,736</div><div class="stat-label">Particles</div></div>
-      <div class="stat"><div class="stat-num">400</div><div class="stat-label">Frames</div></div>
-      <div class="stat"><div class="stat-num">3</div><div class="stat-label">ML Targets</div></div>
+      <div class="stat"><div class="stat-num">10</div><div class="stat-label">Simulations</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Materials</div></div>
+      <div class="stat"><div class="stat-num">2×</div><div class="stat-label">Extremes each</div></div>
+      <div class="stat"><div class="stat-num">500</div><div class="stat-label">Particles / sim</div></div>
     </div>
   </div>
   <div style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end;flex-shrink:0;">
@@ -487,57 +458,44 @@
 <div class="layout">
   <!-- SIDEBAR -->
   <aside>
-    <div class="sidebar-title">Simulations</div>
+    <div class="sidebar-title">Materials (2 extremes each)</div>
 
-    <div class="sim-item active" onclick="selectSim('001_elastic_sphere_tissue_free_fall_test', this)">
-      <div class="sim-id">001_elastic_sphere_tissue_free_fall_test</div>
-      <div class="sim-tag">elastic · sphere · free fall · UniPhy MLS-MPM (Taichi)</div>
+    <div class="sim-item active" onclick="selectMaterial('elastic', this)">
+      <div class="sim-id">001 · Elastic</div>
+      <div class="sim-tag">corotated elasticity · soft-jelly vs. rigid-stiff bounce</div>
     </div>
 
-    <div class="sim-item" onclick="selectSim('002_plasticine_sphere_free_fall_test', this)">
-      <div class="sim-id">002_plasticine_sphere_free_fall_test</div>
-      <div class="sim-tag">plasticine (von Mises) · sphere · free fall</div>
+    <div class="sim-item" onclick="selectMaterial('plasticine', this)">
+      <div class="sim-id">002 · Plasticine</div>
+      <div class="sim-tag">von Mises plastic · runny putty vs. stiff dough</div>
     </div>
 
-    <div class="sim-item" onclick="selectSim('003_newtonian_sphere_free_fall_test', this)">
-      <div class="sim-id">003_newtonian_sphere_free_fall_test</div>
-      <div class="sim-tag">newtonian (viscous fluid) · sphere · free fall</div>
+    <div class="sim-item" onclick="selectMaterial('newtonian', this)">
+      <div class="sim-id">003 · Newtonian</div>
+      <div class="sim-tag">viscous fluid · watery vs. honey-like</div>
     </div>
 
-    <div class="sim-item" onclick="selectSim('004_sand_sphere_free_fall_test', this)">
-      <div class="sim-id">004_sand_sphere_free_fall_test</div>
-      <div class="sim-tag">sand (Drucker-Prager) · sphere · free fall</div>
+    <div class="sim-item" onclick="selectMaterial('sand', this)">
+      <div class="sim-id">004 · Sand</div>
+      <div class="sim-tag">Drucker-Prager · quicksand vs. packed pile</div>
     </div>
 
-    <div class="sim-item" onclick="selectSim('005_non_newtonian_sphere_free_fall_test', this)">
-      <div class="sim-id">005_non_newtonian_sphere_free_fall_test</div>
-      <div class="sim-tag">non_newtonian (von Mises) · sphere · free fall</div>
+    <div class="sim-item" onclick="selectMaterial('nonNewtonian', this)">
+      <div class="sim-id">005 · Non-Newtonian</div>
+      <div class="sim-tag">von Mises plastic · shear-thinning vs. shear-thickening</div>
     </div>
 
     <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.4;pointer-events:none;">
       <div class="sim-id">001_elastic_sphere_poke</div>
       <div class="sim-tag">coming soon</div>
     </div>
-    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.4;pointer-events:none;">
-      <div class="sim-id">002_elastic_sphere_poke</div>
-      <div class="sim-tag">coming soon</div>
-    </div>
-    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.25;pointer-events:none;">
-      <div class="sim-id">003_elastic_box_poke</div>
-      <div class="sim-tag">coming soon</div>
-    </div>
-    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.15;pointer-events:none;">
-      <div class="sim-id">004_elastoplastic_...</div>
-      <div class="sim-tag">coming soon</div>
-    </div>
 
     <div style="padding:1.5rem 1.2rem 0.5rem; border-top:1px solid rgba(255,255,255,0.05); margin-top:1rem;">
       <div style="font-size:0.68rem;color:var(--muted);line-height:1.7;">
-        <div style="color:var(--teal-mid);font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem;">Target dataset size</div>
-        100+ simulations<br>
-        5 material types<br>
-        11 camera views<br>
-        30 frames each
+        <div style="color:var(--teal-mid);font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem;">About this pass</div>
+        Each material's presets were pushed to opposite ends of its defining parameter (stiffness,
+        yield stress, viscosity, or friction) so the difference is obvious within ~1.6s of GIF
+        playback, rather than using one "realistic middle" value per material.
       </div>
     </div>
   </aside>
@@ -549,693 +507,148 @@
 </div>
 
 <script>
-const SIMULATIONS = {
-  "001_elastic_sphere_tissue_free_fall_test": {
-    id: "001_elastic_sphere_tissue_free_fall_test",
-    material: "elastic",
-    geometry: "sphere",
-    interaction: "free_fall",
-    framework: {
-      name: "UniPhy MLS-MPM (Taichi)",
-      note: "Runs via the actual UniPhy_CVPR2025 (HimangiM/UniPhy_CVPR2025) data_process pipeline (dataset_generate.py, per-particle MPM wrapper/simulator), not the custom Warp reimplementation used for the earlier 000 sim.",
-      reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-      warp_version: "Taichi 1.7.4",
-      method: "MLS-MPM per-particle params (P2G -> grid_op -> G2P), corotated elasticity, sparse Taichi pointer grid",
-    },
-    scene: {
-      domain: "sparse Taichi pointer grid, 4096³ addressable cells (dx=0.02), centered at origin",
-      num_grids: 4096,
-      dx: 0.02,
-      dt: 0.0002083333,
-      num_steps: 2000,
-      gravity: -9.8,
-      boundary_condition: "ground plane at y=0, frictionless (friction_alpha=0.0)",
-      floor_y: 0.0,
-      quality_preset: "N/A — data_process pipeline (no quality tiers)",
-    },
-    object: {
-      shape: "sphere",
-      shape_source: "data_process/configs/objects/sphere/geometry/default.yaml (radius=0.1, num_particles=500)",
-      radius: 0.1,
-      resolution: 500,
-      num_particles: 500,
-      total_mass_kg: 3.891,
-    },
-    material: {
-      type: "corotated elasticity (soft tissue)",
-      source: "Tissue-realistic preset: data_process/configs/objects/sphere/material/elastic.yaml, overridden via Hydra CLI (mu=5000, lam=5000, rho=928.82)",
-      E: 12500.0,
-      nu: 0.25,
-      rho: 928.8232,
-      mu: 5000.0,
-      lam: 5000.0,
-    },
-    results: {
-      free_fall_validated: true,
-      free_fall_max_deviation: 0.07474,
-      floor_contact_time_s: 0.34688,
-      floor_penetration: false,
-      final_com_y: 0.05841,
-      original_diameter: 0.2,
-      final_extents_xyz: [0.2404, 0.0840, 0.2517],
-      final_deformation_stretch: 0.06754,
-      max_deformation_stretch: 0.21511,
-    },
-    video: "simulation/renders/sphere_drop.gif",
-    video_caption: "sphere_drop.gif — MPM elastic sphere free-fall, rendered in Blender (Cycles/OptiX)",
-    diagnostics_image: "simulation/renders/shape_diagnostics_001.png",
-    diagnostics_caption: "shape_diagnostics_001.png — bounding-box extents and deformation magnitude over time (computed from GtX.pt/GtF.pt)",
-    raw_metadata: {
-      id: "001_elastic_sphere_tissue_free_fall_test",
-      description: "Solid elastic sphere (tissue-realistic Lamé parameters) free-falling under gravity onto a floor boundary. Simulated via UniPhy's (CVPR 2025) Taichi MLS-MPM data_process pipeline (dataset_generate.py), validated against analytical free fall (g=9.8 m/s^2) and floor non-penetration. Rendered photorealistically in Blender (Cycles + OptiX) with tissue material, three-point lighting, and room environment.",
-      framework: {
-        name: "uniphy_mpm_taichi",
-        reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-        engine_version: "Taichi 1.7.4",
-        method: "MLS-MPM (P2G -> grid_op -> G2P) with corotated elasticity, per-particle params",
-      },
-      scene: {
-        domain: "sparse Taichi pointer grid, 4096^3 cells, dx=0.02",
-        dt: 0.0002083333,
-        frame_dt: 0.0416667,
-        n_substeps_per_frame: 200,
-        num_frames: 10,
-        total_substeps_saved: 2000,
-        gravity: [0.0, -9.8, 0.0],
-        boundary_condition: "ground plane y=0, frictionless",
-      },
-      object: {
-        shape: "sphere",
-        shape_source: "data_process/configs/objects/sphere/geometry/default.yaml",
-        initial_position: [0.55, 0.55, 0.0],
-        initial_rotation_deg: [45, 90, 45],
-        radius: 0.1,
-        num_particles: 500,
-        total_mass_kg: 3.891,
-      },
-      material: {
-        type: "corotated_elasticity",
-        source: "data_process/configs/objects/sphere/material/elastic.yaml (Hydra override)",
-        mu: 5000.0,
-        lam: 5000.0,
-        rho: 928.8232,
-        E_equivalent: 12500.0,
-        nu_equivalent: 0.25,
-        friction_alpha: 0.0,
-      },
-      results: {
-        initial_com_y: 0.54829,
-        min_com_y: 0.03345,
-        final_com_y: 0.05841,
-        min_particle_y_all_frames: 0.01002,
-        floor_contact_time_s: 0.34688,
-        free_fall_max_deviation: 0.07474,
-        free_fall_validated: true,
-        floor_penetration: false,
-        original_diameter: 0.2,
-        final_extents_xyz: [0.2404, 0.0840, 0.2517],
-        max_extent_xyz: [0.2749, 0.1992, 0.2896],
-        final_deformation_stretch: 0.06754,
-        max_deformation_stretch: 0.21511,
-        max_deformation_stretch_frame: 1658,
-      },
-    },
-    files: [
-      { name: "output/001_elastic_sphere_tissue_free_fall_test/", type: "folder", children: [
-        { name: "config.yaml", type: "file", size: "1.5 KB", highlight: true },
-        { name: "GtX.pt", type: "file", size: "49 MB", highlight: true },
-        { name: "GtV.pt", type: "file", size: "49 MB" },
-        { name: "GtF.pt", type: "file", size: "145 MB", highlight: true },
-        { name: "GtFtmp.pt", type: "file", size: "145 MB" },
-        { name: "GtStress.pt", type: "file", size: "145 MB" },
-        { name: "GtC.pt", type: "file", size: "145 MB" },
-        { name: "sphere_keyframes.npy", type: "file", size: "1.1 KB", highlight: true },
-      ]},
-      { name: "renders/", type: "folder", children: [
-        { name: "sphere_drop.gif", type: "file", size: "9.7 MB", highlight: true },
-        { name: "shape_diagnostics_001.png", type: "file", size: "81 KB" },
-      ]},
-      { name: "blender/", type: "folder", children: [
-        { name: "001_elastic_sphere_tissue.blend", type: "file", size: "180 KB", highlight: true },
-        { name: "scripts/", type: "folder", children: [
-          { name: "01_animate_sphere.py", type: "file", size: "~1.6 KB" },
-          { name: "02_tissue_material.py", type: "file", size: "~2.8 KB" },
-          { name: "03_room_geometry.py", type: "file", size: "~1.7 KB" },
-          { name: "04_surface_materials.py", type: "file", size: "~8.2 KB" },
-          { name: "05_lighting.py", type: "file", size: "~1.8 KB" },
-          { name: "06_camera.py", type: "file", size: "~1.3 KB" },
-          { name: "09_render_settings.py", type: "file", size: "~1.5 KB" },
-        ]},
-      ]},
-      { name: "compute_keyframes.py", type: "file", size: "794 B", highlight: true },
-      { name: "data_process/dataset_generate.py", type: "file", size: "4.1 KB", highlight: true },
-    ]
-  },
-
-  "002_plasticine_sphere_free_fall_test": {
-    id: "002_plasticine_sphere_free_fall_test",
-    geometry: "sphere",
-    interaction: "free_fall",
-    framework: {
-      name: "UniPhy MLS-MPM (Taichi)",
-      note: "Same data_process pipeline and scene/geometry config as 001 — only the material block differs (von Mises elastoplastic instead of corotated elasticity).",
-      reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-      warp_version: "Taichi 1.7.4",
-      method: "MLS-MPM per-particle params (P2G -> grid_op -> G2P), von Mises elastoplastic return mapping, sparse Taichi pointer grid",
-    },
-    scene: {
-      domain: "sparse Taichi pointer grid, 4096³ addressable cells (dx=0.02), centered at origin",
-      num_grids: 4096,
-      dx: 0.02,
-      dt: 0.0002083333,
-      num_steps: 2000,
-      gravity: -9.8,
-      boundary_condition: "ground plane at y=0, frictionless",
-      floor_y: 0.0,
-      quality_preset: "N/A — data_process pipeline (no quality tiers)",
-    },
-    object: {
-      shape: "sphere",
-      shape_source: "data_process/configs/objects/sphere/geometry/default.yaml (radius=0.1, num_particles=500)",
-      radius: 0.1,
-      resolution: 500,
-      num_particles: 500,
-      total_mass_kg: 3.891,
-    },
-    material: {
-      type: "von Mises elastoplastic (plasticine)",
-      source: "data_process/configs/objects/sphere/material/plasticine.yaml (mu=10000, lam=10000, yield_stress=5000, plastic_viscosity=1, rho=928.82)",
-      E: 25000.0,
-      nu: 0.25,
-      rho: 928.8232,
-      mu: 10000.0,
-      lam: 10000.0,
-    },
-    results: {
-      free_fall_validated: true,
-      free_fall_max_deviation: 0.08844,
-      floor_contact_time_s: 0.34979,
-      floor_penetration: false,
-      final_com_y: 0.03911,
-      original_diameter: 0.2,
-      final_extents_xyz: [0.2577, 0.0517, 0.2502],
-      final_deformation_stretch: 0.0359,
-      max_deformation_stretch: 0.08645,
-    },
-    video: "simulation/renders/sphere_drop_002.gif",
-    video_caption: "sphere_drop_002.gif — MPM plasticine sphere free-fall, rendered in Blender (Cycles/OptiX)",
-    diagnostics_image: "simulation/renders/shape_diagnostics_002.png",
-    diagnostics_caption: "shape_diagnostics_002.png — bounding-box extents and deformation magnitude over time (computed from GtX.pt/GtF.pt)",
-    raw_metadata: {
-      id: "002_plasticine_sphere_free_fall_test",
-      description: "Solid von Mises elastoplastic sphere (plasticine preset) free-falling under gravity onto a floor boundary. Same UniPhy Taichi MLS-MPM data_process pipeline as 001, only the material block changed (mu=lam=10000, yield_stress=5000). Effective E/nu were also measured directly from the saved stress/strain tensors (not just taken from config) as an independent check that the constitutive model behaves as configured.",
-      framework: {
-        name: "uniphy_mpm_taichi",
-        reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-        engine_version: "Taichi 1.7.4",
-        method: "MLS-MPM (P2G -> grid_op -> G2P), von Mises elastoplastic return mapping, per-particle params",
-      },
-      scene: {
-        domain: "sparse Taichi pointer grid, 4096^3 cells, dx=0.02",
-        dt: 0.0002083333,
-        frame_dt: 0.0416667,
-        n_substeps_per_frame: 200,
-        num_frames: 10,
-        total_substeps_saved: 2000,
-        gravity: [0.0, -9.8, 0.0],
-        boundary_condition: "ground plane y=0, frictionless",
-      },
-      object: {
-        shape: "sphere",
-        shape_source: "data_process/configs/objects/sphere/geometry/default.yaml",
-        radius: 0.1,
-        num_particles: 500,
-        total_mass_kg: 3.891,
-      },
-      material: {
-        type: "von_mises",
-        source: "data_process/configs/objects/sphere/material/plasticine.yaml",
-        mu: 10000.0,
-        lam: 10000.0,
-        yield_stress: 5000.0,
-        plastic_viscosity: 1.0,
-        rho: 928.8232,
-        E_nominal: 25000.0,
-        nu_nominal: 0.25,
-      },
-      results: {
-        initial_com_y: 0.54743,
-        min_com_y: 0.03634,
-        final_com_y: 0.03911,
-        min_particle_y_all_frames: 0.01238,
-        floor_contact_time_s: 0.34979,
-        free_fall_max_deviation: 0.08844,
-        free_fall_validated: true,
-        floor_penetration: false,
-        original_diameter: 0.2,
-        final_extents_xyz: [0.2577, 0.0517, 0.2502],
-        max_extent_xyz: [0.2661, 0.1989, 0.2634],
-        final_deformation_stretch: 0.0359,
-        max_deformation_stretch: 0.08645,
-        max_deformation_stretch_frame: 1661,
-        effective_E_measured: 24999.99,
-        effective_nu_measured: 0.25,
-        E_nu_fit_method: "linear regression (through origin) of Hencky principal stress vs. principal strain, pre-yield samples only, from GtF.pt/GtStress.pt",
-        E_nu_fit_r_squared: 1.0,
-      },
-    },
-    files: [
-      { name: "output/002_plasticine_sphere_free_fall_test/", type: "folder", children: [
-        { name: "config.yaml", type: "file", size: "1.5 KB", highlight: true },
-        { name: "GtX.pt", type: "file", size: "48 MB", highlight: true },
-        { name: "GtV.pt", type: "file", size: "48 MB" },
-        { name: "GtF.pt", type: "file", size: "144 MB", highlight: true },
-        { name: "GtFtmp.pt", type: "file", size: "144 MB" },
-        { name: "GtStress.pt", type: "file", size: "144 MB" },
-        { name: "GtC.pt", type: "file", size: "144 MB" },
-        { name: "sphere_keyframes.npy", type: "file", size: "1.1 KB", highlight: true },
-      ]},
-      { name: "renders/", type: "folder", children: [
-        { name: "sphere_drop_002.gif", type: "file", size: "8.6 MB", highlight: true },
-        { name: "shape_diagnostics_002.png", type: "file", size: "77 KB" },
-      ]},
-      { name: "blender/", type: "folder", children: [
-        { name: "001_elastic_sphere_tissue.blend", type: "file", size: "180 KB", highlight: true, note: "shared scene file, re-keyframed per sim" },
-      ]},
-      { name: "compute_keyframes.py", type: "file", size: "794 B", highlight: true },
-      { name: "data_process/dataset_generate.py", type: "file", size: "4.1 KB", highlight: true },
-    ]
-  },
-
-  "003_newtonian_sphere_free_fall_test": {
-    id: "003_newtonian_sphere_free_fall_test",
-    geometry: "sphere",
-    interaction: "free_fall",
-    framework: {
-      name: "UniPhy MLS-MPM (Taichi)",
-      note: "Same data_process pipeline and scene/geometry config as 001 — only the material block differs (viscous_fluid instead of corotated elasticity). This material tracks only F[...,0,0] as a scalar volume-ratio proxy, not a real deformation gradient.",
-      reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-      warp_version: "Taichi 1.7.4",
-      method: "MLS-MPM per-particle params (P2G -> grid_op -> G2P), Newtonian viscous fluid stress law, sparse Taichi pointer grid",
-    },
-    scene: {
-      domain: "sparse Taichi pointer grid, 4096³ addressable cells (dx=0.02), centered at origin",
-      num_grids: 4096,
-      dx: 0.02,
-      dt: 0.0002083333,
-      num_steps: 2000,
-      gravity: -9.8,
-      boundary_condition: "ground plane at y=0, frictionless",
-      floor_y: 0.0,
-      quality_preset: "N/A — data_process pipeline (no quality tiers)",
-    },
-    object: {
-      shape: "sphere",
-      shape_source: "data_process/configs/objects/sphere/geometry/default.yaml (radius=0.1, num_particles=500)",
-      radius: 0.1,
-      resolution: 500,
-      num_particles: 500,
-      total_mass_kg: 3.891,
-    },
-    material: {
-      type: "Newtonian viscous fluid",
-      source: "data_process/configs/objects/sphere/material/newtonian.yaml (mu=50, lam=30 used as shear/bulk viscosity coefficients, rho=928.82)",
-      E: null,
-      nu: null,
-      rho: 928.8232,
-      mu: 50.0,
-      mu_label: "mu — shear viscosity coefficient",
-      mu_unit: "Pa·s",
-      lam: 30.0,
-      lam_label: "lambda — bulk viscosity term (kappa = 2/3·mu + lam)",
-      lam_unit: "Pa·s",
-    },
-    results: {
-      free_fall_validated: true,
-      free_fall_max_deviation: 0.10771,
-      floor_contact_time_s: 0.35792,
-      floor_penetration: false,
-      final_com_y: 0.02771,
-      original_diameter: 0.2,
-      final_extents_xyz: [0.2880, 0.0394, 0.2865],
-      final_deformation_stretch: null,
-      max_deformation_stretch: null,
-    },
-    video: "simulation/renders/sphere_drop_003.gif",
-    video_caption: "sphere_drop_003.gif — MPM newtonian-fluid sphere free-fall, rendered in Blender (Cycles/OptiX)",
-    diagnostics_image: "simulation/renders/shape_diagnostics_003.png",
-    diagnostics_caption: "shape_diagnostics_003.png — bounding-box extents and deformation magnitude over time (computed from GtX.pt)",
-    raw_metadata: {
-      id: "003_newtonian_sphere_free_fall_test",
-      description: "Newtonian viscous fluid sphere (mu=50, lam=30 as shear/bulk viscosity coefficients, not Lame constants) free-falling onto a floor boundary, then spreading/pancaking on impact. Stress here is rate-dependent (proportional to the velocity-gradient field C, not to accumulated strain), so this material has no elastic modulus — E/nu do not apply. Effective shear and bulk viscosity were instead measured directly from GtStress.pt/GtC.pt/GtF.pt as a physically-appropriate equivalent validation.",
-      framework: {
-        name: "uniphy_mpm_taichi",
-        reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-        engine_version: "Taichi 1.7.4",
-        method: "MLS-MPM (P2G -> grid_op -> G2P), Newtonian viscous fluid stress law, per-particle params",
-      },
-      scene: {
-        domain: "sparse Taichi pointer grid, 4096^3 cells, dx=0.02",
-        dt: 0.0002083333,
-        frame_dt: 0.0416667,
-        n_substeps_per_frame: 200,
-        num_frames: 10,
-        total_substeps_saved: 2000,
-        gravity: [0.0, -9.8, 0.0],
-        boundary_condition: "ground plane y=0, frictionless",
-      },
-      object: {
-        shape: "sphere",
-        shape_source: "data_process/configs/objects/sphere/geometry/default.yaml",
-        radius: 0.1,
-        num_particles: 500,
-        total_mass_kg: 3.891,
-      },
-      material: {
-        type: "viscous_fluid",
-        source: "data_process/configs/objects/sphere/material/newtonian.yaml",
-        mu: 50.0,
-        lam: 30.0,
-        rho: 928.8232,
-        note: "mu/lam are shear/bulk viscosity coefficients for this material, not Lame elastic constants — stress = kappa*(J-1/J^6)*I + mu*J*sym(C), kappa=(2/3)mu+lam",
-      },
-      results: {
-        initial_com_y: 0.54375,
-        min_com_y: 0.02375,
-        final_com_y: 0.02771,
-        min_particle_y_all_frames: 0.00955,
-        floor_contact_time_s: 0.35792,
-        free_fall_max_deviation: 0.10771,
-        free_fall_validated: true,
-        floor_penetration: false,
-        original_diameter: 0.2,
-        final_extents_xyz: [0.2880, 0.0394, 0.2865],
-        max_extent_xyz: [0.2880, 0.1991, 0.2865],
-        deformation_stretch_note: "F tracks only a scalar volume-ratio proxy (F[...,0,0]) for viscous_fluid, not a real deformation gradient — SVD-based shape stretch is not meaningful here; see final_extents_xyz for shape change instead.",
-        effective_mu_measured: 49.657,
-        effective_kappa_measured: 63.399,
-        viscosity_fit_method: "linear regression (through origin): dev(stress) vs. J*dev(sym(C)) for mu; trace(stress)/3 minus the mu contribution vs. (J-1/J^6) for kappa; from GtStress.pt/GtC.pt/GtF.pt",
-        mu_fit_r_squared: 0.999,
-        kappa_fit_r_squared: 0.99998,
-      },
-    },
-    files: [
-      { name: "output/003_newtonian_sphere_free_fall_test/", type: "folder", children: [
-        { name: "config.yaml", type: "file", size: "1.5 KB", highlight: true },
-        { name: "GtX.pt", type: "file", size: "48 MB", highlight: true },
-        { name: "GtV.pt", type: "file", size: "48 MB" },
-        { name: "GtF.pt", type: "file", size: "144 MB", highlight: true },
-        { name: "GtFtmp.pt", type: "file", size: "144 MB" },
-        { name: "GtStress.pt", type: "file", size: "144 MB" },
-        { name: "GtC.pt", type: "file", size: "144 MB", highlight: true },
-        { name: "sphere_keyframes.npy", type: "file", size: "1.1 KB", highlight: true },
-      ]},
-      { name: "renders/", type: "folder", children: [
-        { name: "sphere_drop_003.gif", type: "file", size: "8.6 MB", highlight: true },
-        { name: "shape_diagnostics_003.png", type: "file", size: "77 KB" },
-      ]},
-      { name: "blender/", type: "folder", children: [
-        { name: "001_elastic_sphere_tissue.blend", type: "file", size: "180 KB", highlight: true, note: "shared scene file, re-keyframed per sim" },
-      ]},
-      { name: "compute_keyframes.py", type: "file", size: "794 B", highlight: true },
-      { name: "data_process/dataset_generate.py", type: "file", size: "4.1 KB", highlight: true },
-    ]
-  },
-
-  "004_sand_sphere_free_fall_test": {
-    id: "004_sand_sphere_free_fall_test",
-    geometry: "sphere",
-    interaction: "free_fall",
-    framework: {
-      name: "UniPhy MLS-MPM (Taichi)",
-      note: "Same data_process pipeline and scene/geometry config as 001 — only the material block differs (Drucker-Prager granular instead of corotated elasticity). Shares the same Hencky-strain stress formula as von_mises/elasticity; only the plastic return-mapping differs.",
-      reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-      warp_version: "Taichi 1.7.4",
-      method: "MLS-MPM per-particle params (P2G -> grid_op -> G2P), Drucker-Prager frictional-plastic return mapping, sparse Taichi pointer grid",
-    },
-    scene: {
-      domain: "sparse Taichi pointer grid, 4096³ addressable cells (dx=0.02), centered at origin",
-      num_grids: 4096,
-      dx: 0.02,
-      dt: 0.0002083333,
-      num_steps: 2000,
-      gravity: -9.8,
-      boundary_condition: "ground plane at y=0, frictionless",
-      floor_y: 0.0,
-      quality_preset: "N/A — data_process pipeline (no quality tiers)",
-    },
-    object: {
-      shape: "sphere",
-      shape_source: "data_process/configs/objects/sphere/geometry/default.yaml (radius=0.1, num_particles=500)",
-      radius: 0.1,
-      resolution: 500,
-      num_particles: 500,
-      total_mass_kg: 3.891,
-    },
-    material: {
-      type: "Drucker-Prager granular (sand)",
-      source: "data_process/configs/objects/sphere/material/sand.yaml (mu=2400, lam=2400, friction_alpha=0.01, rho=928.82)",
-      E: 6000.0,
-      nu: 0.25,
-      rho: 928.8232,
-      mu: 2400.0,
-      lam: 2400.0,
-    },
-    results: {
-      free_fall_validated: true,
-      free_fall_max_deviation: 0.08576,
-      floor_contact_time_s: 0.35521,
-      floor_penetration: false,
-      final_com_y: 0.05873,
-      original_diameter: 0.2,
-      final_extents_xyz: [0.3928, 0.0862, 0.3754],
-      final_deformation_stretch: 0.0000001,
-      max_deformation_stretch: 0.19691,
-    },
-    video: "simulation/renders/sphere_drop_004.gif",
-    video_caption: "sphere_drop_004.gif — MPM sand sphere free-fall, rendered in Blender (Cycles/OptiX)",
-    diagnostics_image: "simulation/renders/shape_diagnostics_004.png",
-    diagnostics_caption: "shape_diagnostics_004.png — bounding-box extents and deformation magnitude over time (computed from GtX.pt/GtF.pt)",
-    raw_metadata: {
-      id: "004_sand_sphere_free_fall_test",
-      description: "Granular sand sphere (Drucker-Prager, mu=lam=2400, friction_alpha=0.01) free-falling onto a floor boundary and collapsing into a spread pile on impact. Drucker-Prager shares elasticity/von_mises's Hencky-stress formula in the pre-yield regime, so a small-strain E/nu fit is meaningful there (measured E/nu match the config's nominal values almost exactly); large-deformation sand flow itself is governed by friction_alpha, which E/nu does not capture. Final per-particle deformation stretch is near zero even though the pile is heavily spread — granular particles rearrange plastically (near-identity individual F) rather than each particle stretching, unlike the elastic/plasticine spheres.",
-      framework: {
-        name: "uniphy_mpm_taichi",
-        reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-        engine_version: "Taichi 1.7.4",
-        method: "MLS-MPM (P2G -> grid_op -> G2P), Drucker-Prager frictional-plastic return mapping, per-particle params",
-      },
-      scene: {
-        domain: "sparse Taichi pointer grid, 4096^3 cells, dx=0.02",
-        dt: 0.0002083333,
-        frame_dt: 0.0416667,
-        n_substeps_per_frame: 200,
-        num_frames: 10,
-        total_substeps_saved: 2000,
-        gravity: [0.0, -9.8, 0.0],
-        boundary_condition: "ground plane y=0, frictionless",
-      },
-      object: {
-        shape: "sphere",
-        shape_source: "data_process/configs/objects/sphere/geometry/default.yaml",
-        radius: 0.1,
-        num_particles: 500,
-        total_mass_kg: 3.891,
-      },
-      material: {
-        type: "drucker_prager",
-        source: "data_process/configs/objects/sphere/material/sand.yaml",
-        mu: 2400.0,
-        lam: 2400.0,
-        friction_alpha: 0.01,
-        rho: 928.8232,
-        E_nominal: 6000.0,
-        nu_nominal: 0.25,
-        note: "E/nu characterize only the small-strain pre-yield elastic response; friction_alpha governs the frictional yield surface that dominates large-deformation sand flow.",
-      },
-      results: {
-        initial_com_y: 0.55306,
-        min_com_y: 0.02057,
-        final_com_y: 0.05873,
-        min_particle_y_all_frames: 0.00379,
-        floor_contact_time_s: 0.35521,
-        free_fall_max_deviation: 0.08576,
-        free_fall_validated: true,
-        floor_penetration: false,
-        original_diameter: 0.2,
-        final_extents_xyz: [0.3928, 0.0862, 0.3754],
-        max_extent_xyz: [0.3928, 0.1993, 0.3754],
-        final_deformation_stretch: 0.0000001,
-        max_deformation_stretch: 0.19691,
-        max_deformation_stretch_frame: 1676,
-        effective_E_measured: 5999.998,
-        effective_nu_measured: 0.25,
-        E_nu_fit_method: "linear regression (through origin) of Hencky principal stress vs. principal strain, small-strain pre-yield samples only, from GtF.pt/GtStress.pt",
-        E_nu_fit_r_squared: 1.0,
-      },
-    },
-    files: [
-      { name: "output/004_sand_sphere_free_fall_test/", type: "folder", children: [
-        { name: "config.yaml", type: "file", size: "1.5 KB", highlight: true },
-        { name: "GtX.pt", type: "file", size: "48 MB", highlight: true },
-        { name: "GtV.pt", type: "file", size: "48 MB" },
-        { name: "GtF.pt", type: "file", size: "144 MB", highlight: true },
-        { name: "GtFtmp.pt", type: "file", size: "144 MB" },
-        { name: "GtStress.pt", type: "file", size: "144 MB" },
-        { name: "GtC.pt", type: "file", size: "144 MB" },
-        { name: "sphere_keyframes.npy", type: "file", size: "1.1 KB", highlight: true },
-      ]},
-      { name: "renders/", type: "folder", children: [
-        { name: "sphere_drop_004.gif", type: "file", size: "8.9 MB", highlight: true },
-        { name: "shape_diagnostics_004.png", type: "file", size: "87 KB" },
-      ]},
-      { name: "blender/", type: "folder", children: [
-        { name: "001_elastic_sphere_tissue.blend", type: "file", size: "180 KB", highlight: true, note: "shared scene file, re-keyframed per sim" },
-      ]},
-      { name: "compute_keyframes.py", type: "file", size: "794 B", highlight: true },
-      { name: "data_process/dataset_generate.py", type: "file", size: "4.1 KB", highlight: true },
-    ]
-  },
-
-  "005_non_newtonian_sphere_free_fall_test": {
-    id: "005_non_newtonian_sphere_free_fall_test",
-    geometry: "sphere",
-    interaction: "free_fall",
-    framework: {
-      name: "UniPhy MLS-MPM (Taichi)",
-      note: "Same data_process pipeline and scene/geometry config as 001 — only the material block differs. Despite the 'non_newtonian' preset name (inherited from UniPhy), the constitutive model is von_mises elastoplastic — the same model as plasticine (002), just different mu/lam/yield_stress/plastic_viscosity. See 003 (newtonian) for the actual viscous-fluid model in this pipeline.",
-      reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-      warp_version: "Taichi 1.7.4",
-      method: "MLS-MPM per-particle params (P2G -> grid_op -> G2P), von Mises elastoplastic return mapping, sparse Taichi pointer grid",
-    },
-    scene: {
-      domain: "sparse Taichi pointer grid, 4096³ addressable cells (dx=0.02), centered at origin",
-      num_grids: 4096,
-      dx: 0.02,
-      dt: 0.0002083333,
-      num_steps: 2000,
-      gravity: -9.8,
-      boundary_condition: "ground plane at y=0, frictionless",
-      floor_y: 0.0,
-      quality_preset: "N/A — data_process pipeline (no quality tiers)",
-    },
-    object: {
-      shape: "sphere",
-      shape_source: "data_process/configs/objects/sphere/geometry/default.yaml (radius=0.1, num_particles=500)",
-      radius: 0.1,
-      resolution: 500,
-      num_particles: 500,
-      total_mass_kg: 3.891,
-    },
-    material: {
-      type: "von Mises elastoplastic ('non_newtonian' preset)",
-      source: "data_process/configs/objects/sphere/material/non_newtonian.yaml (mu=1000, lam=1000, yield_stress=1000, plastic_viscosity=0.1, rho=928.82)",
-      E: 2500.0,
-      nu: 0.25,
-      rho: 928.8232,
-      mu: 1000.0,
-      lam: 1000.0,
-    },
-    results: {
-      free_fall_validated: true,
-      free_fall_max_deviation: 0.08647,
-      floor_contact_time_s: 0.35625,
-      floor_penetration: false,
-      final_com_y: 0.05985,
-      original_diameter: 0.2,
-      final_extents_xyz: [0.2461, 0.0966, 0.2531],
-      final_deformation_stretch: 0.1536,
-      max_deformation_stretch: 0.2940,
-    },
-    video: "simulation/renders/sphere_drop_005.gif",
-    video_caption: "sphere_drop_005.gif — MPM non_newtonian sphere free-fall, rendered in Blender (Cycles/OptiX)",
-    diagnostics_image: "simulation/renders/shape_diagnostics_005.png",
-    diagnostics_caption: "shape_diagnostics_005.png — bounding-box extents and deformation magnitude over time (computed from GtX.pt/GtF.pt)",
-    raw_metadata: {
-      id: "005_non_newtonian_sphere_free_fall_test",
-      description: "Soft von Mises elastoplastic sphere (UniPhy's 'non_newtonian' preset: mu=lam=1000, yield_stress=1000, plastic_viscosity=0.1) free-falling onto a floor boundary. Named 'non_newtonian' by the upstream UniPhy preset, but the constitutive model is the same von_mises elastoplastic law as plasticine (002) — not an actual rate-dependent fluid model (that's 003 newtonian, viscous_fluid). Effective E/nu measured directly from stress/strain tensors match the config nominal values almost exactly.",
-      framework: {
-        name: "uniphy_mpm_taichi",
-        reference: "https://github.com/HimangiM/UniPhy_CVPR2025",
-        engine_version: "Taichi 1.7.4",
-        method: "MLS-MPM (P2G -> grid_op -> G2P), von Mises elastoplastic return mapping, per-particle params",
-      },
-      scene: {
-        domain: "sparse Taichi pointer grid, 4096^3 cells, dx=0.02",
-        dt: 0.0002083333,
-        frame_dt: 0.0416667,
-        n_substeps_per_frame: 200,
-        num_frames: 10,
-        total_substeps_saved: 2000,
-        gravity: [0.0, -9.8, 0.0],
-        boundary_condition: "ground plane y=0, frictionless",
-      },
-      object: {
-        shape: "sphere",
-        shape_source: "data_process/configs/objects/sphere/geometry/default.yaml",
-        radius: 0.1,
-        num_particles: 500,
-        total_mass_kg: 3.891,
-      },
-      material: {
-        type: "von_mises",
-        source: "data_process/configs/objects/sphere/material/non_newtonian.yaml",
-        mu: 1000.0,
-        lam: 1000.0,
-        yield_stress: 1000.0,
-        plastic_viscosity: 0.1,
-        rho: 928.8232,
-        E_nominal: 2500.0,
-        nu_nominal: 0.25,
-        note: "Preset name 'non_newtonian' is inherited from UniPhy; the constitutive model itself is von_mises, identical in form to plasticine (002).",
-      },
-      results: {
-        initial_com_y: 0.55184,
-        min_com_y: 0.01643,
-        final_com_y: 0.05985,
-        min_particle_y_all_frames: 0.00165,
-        floor_contact_time_s: 0.35625,
-        free_fall_max_deviation: 0.08647,
-        free_fall_validated: true,
-        floor_penetration: false,
-        original_diameter: 0.2,
-        final_extents_xyz: [0.2461, 0.0966, 0.2531],
-        max_extent_xyz: [0.2461, 0.1998, 0.2531],
-        final_deformation_stretch: 0.1536,
-        max_deformation_stretch: 0.2940,
-        max_deformation_stretch_frame: 1702,
-        effective_E_measured: 2499.999,
-        effective_nu_measured: 0.25,
-        E_nu_fit_method: "linear regression (through origin) of Hencky principal stress vs. principal strain, pre-yield samples only, from GtF.pt/GtStress.pt",
-        E_nu_fit_r_squared: 1.0,
-      },
-    },
-    files: [
-      { name: "output/005_non_newtonian_sphere_free_fall_test/", type: "folder", children: [
-        { name: "config.yaml", type: "file", size: "1.5 KB", highlight: true },
-        { name: "GtX.pt", type: "file", size: "48 MB", highlight: true },
-        { name: "GtV.pt", type: "file", size: "48 MB" },
-        { name: "GtF.pt", type: "file", size: "144 MB", highlight: true },
-        { name: "GtFtmp.pt", type: "file", size: "144 MB" },
-        { name: "GtStress.pt", type: "file", size: "144 MB" },
-        { name: "GtC.pt", type: "file", size: "144 MB" },
-        { name: "sphere_keyframes.npy", type: "file", size: "1.1 KB", highlight: true },
-      ]},
-      { name: "renders/", type: "folder", children: [
-        { name: "sphere_drop_005.gif", type: "file", size: "8.7 MB", highlight: true },
-        { name: "shape_diagnostics_005.png", type: "file", size: "80 KB" },
-      ]},
-      { name: "blender/", type: "folder", children: [
-        { name: "001_elastic_sphere_tissue.blend", type: "file", size: "180 KB", highlight: true, note: "shared scene file, re-keyframed per sim" },
-      ]},
-      { name: "compute_keyframes.py", type: "file", size: "794 B", highlight: true },
-      { name: "data_process/dataset_generate.py", type: "file", size: "4.1 KB", highlight: true },
-    ]
-  }
+// Shared scene/geometry config — identical across every sim (only the material block + floor
+// collider behavior changes). dt/frame_dt/gravity/geometry are the same for every sim except
+// 001b (elastic stiff), which needed a different inv_dt for CFL stability at its higher stiffness
+// — noted explicitly on that variant instead of hidden in the shared block.
+const SHARED_SCENE = {
+  domain: "sparse Taichi pointer grid, 4096³ addressable cells (dx=0.02), centered at origin",
+  dx: 0.02,
+  frame_dt: 0.0416667,
+  num_frames: 10,
+  gravity: [0.0, -9.8, 0.0],
+  geometry: "sphere, radius 0.1, 500 particles (data_process/configs/objects/sphere/geometry/default.yaml)",
+  rho: 928.8232,
 };
 
-// Recursively render a JS value as syntax-highlighted, indented "JSON" markup
+const MATERIALS = {
+  elastic: {
+    label: "Elastic",
+    idPrefix: "001",
+    modelType: "MPMSimulator.elasticity",
+    modelNote: "Neo-Hookean hyperelastic Kirchhoff stress τ = μ(FFᵀ−I) + λ·log(J)·I, computed directly in p2g (no plastic return-mapping — project_F passes F through unchanged for this material type). Floor collider: surface_separate (a hyperelastic solid isn't supposed to hold a permanent shape at the contact point, so it needs to be able to leave the floor again once its own restoring stress pushes it away — that's what makes a real bounce possible).",
+    axis: "Young's modulus E (stiffness) — everything else (ν≈0.3-0.45, ρ, geometry, initial velocity) held fixed.",
+    variants: {
+      a: {
+        id: "001a_elastic_sphere_tissue_free_fall_test_soft",
+        label: "Soft / Jelly",
+        tagline: "Low stiffness → big, slow, jelly-like wobble on impact",
+        mu: 5172, lam: 46552, E: 14999, nu: 0.45, inv_dt: 4800,
+        results: {initial_com_y:0.546, min_com_y:0.03549, final_com_y:0.05134, min_particle_y_all_frames:0.01074, floor_penetration:false, floor_contact_time_s:0.29688, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1992, final_extents_xyz:[0.2357,0.0669,0.2496], max_extent_xyz:[0.2787,0.199,0.2799], final_deformation_stretch:0.07762, max_deformation_stretch:0.2167, max_deformation_stretch_frame:1609},
+      },
+      b: {
+        id: "001b_elastic_sphere_tissue_free_fall_test_stiff",
+        label: "Rigid / Stiff",
+        tagline: "E=3MPa (rubber-ball range) → minimal deformation, crisp bounce",
+        mu: 1153846, lam: 1730769, E: 3000000, nu: 0.30, inv_dt: 4800,
+        note: "E=8MPa (mu=3.08M, lam=4.62M) was tried first and hit CFL instability (verified via bisection: also seed-sensitive right at the threshold — one random particle-sampling seed passed, another failed). E=3MPa has real margin (~10x) at the same dt as every other sim, so no special timestep was needed after all.",
+        results: {initial_com_y:0.55519, min_com_y:0.0806, final_com_y:0.08119, min_particle_y_all_frames:0.01709, floor_penetration:false, floor_contact_time_s:0.29688, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1991, final_extents_xyz:[0.2258,0.1481,0.2075], max_extent_xyz:[0.2262,0.1994,0.2089], final_deformation_stretch:0.00235, max_deformation_stretch:0.00802, max_deformation_stretch_frame:1504},
+      },
+    },
+  },
+
+  plasticine: {
+    label: "Plasticine",
+    idPrefix: "002",
+    modelType: "MPMSimulator.von_mises",
+    modelNote: "Hencky-strain J2 (von Mises) plasticity with a Perzyna-style viscoplastic overstress term (plastic_viscosity softens/rate-damps the return mapping onto the yield surface). Floor collider: surface_sticky (once this material yields, it's supposed to keep whatever shape it yielded into — including staying put wherever it first touched down).",
+    axis: "yield_stress (how much stress before it plastically gives way) — mu/lam and plastic_viscosity also adjusted to match (firmer dough needs a firmer elastic response too).",
+    variants: {
+      a: {
+        id: "002a_plasticine_sphere_free_fall_test_runny",
+        label: "Runny Putty",
+        tagline: "yield_stress cut to 100 Pa → flattens almost immediately, keeps spreading",
+        mu: 8000, lam: 8000, E: 20000, nu: 0.25, yield_stress: 100, plastic_viscosity: 0.1, inv_dt: 4800,
+        results: {initial_com_y:0.55454, min_com_y:0.0188, final_com_y:0.01893, min_particle_y_all_frames:0.00754, floor_penetration:false, floor_contact_time_s:0.29667, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1992, final_extents_xyz:[0.3571,0.0251,0.3523], max_extent_xyz:[0.3571,0.1994,0.3523], final_deformation_stretch:0.01015, max_deformation_stretch:0.07068, max_deformation_stretch_frame:1653},
+      },
+      b: {
+        id: "002b_plasticine_sphere_free_fall_test_stiff",
+        label: "Stiff Dough",
+        tagline: "yield_stress raised to 20,000 Pa (200x) → barely dents",
+        mu: 30000, lam: 30000, E: 75000, nu: 0.25, yield_stress: 20000, plastic_viscosity: 5, inv_dt: 4800,
+        results: {initial_com_y:0.55066, min_com_y:0.04306, final_com_y:0.04666, min_particle_y_all_frames:0.01476, floor_penetration:false, floor_contact_time_s:0.29667, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1996, final_extents_xyz:[0.2723,0.0606,0.2714], max_extent_xyz:[0.2778,0.1999,0.2765], final_deformation_stretch:0.03157, max_deformation_stretch:0.07222, max_deformation_stretch_frame:1581},
+      },
+    },
+  },
+
+  newtonian: {
+    label: "Newtonian",
+    idPrefix: "003",
+    modelType: "MPMSimulator.viscous_fluid",
+    modelNote: "Weakly-compressible fluid EOS stress = κ(J−J⁻⁶)I + μ·J·sym(C). Only F[...,0,0] is tracked as a scalar volume-ratio proxy J (not a real deformation gradient), and stress depends on the strain-rate field C, not accumulated strain — so there's no elastic modulus here (mu/lam are reused as shear/bulk viscosity coefficients, not Lamé constants). Floor collider: surface_separate (a fluid needs to be able to slide/spread at the base, not freeze the instant it touches down).",
+    axis: "shear viscosity μ (how readily it flows/spreads) — bulk term λ raised alongside it to keep the weakly-compressible EOS numerically well-behaved at low viscosity.",
+    variants: {
+      a: {
+        id: "003a_newtonian_sphere_free_fall_test_watery",
+        label: "Watery",
+        tagline: "μ cut to 2 Pa·s (water-like) → thin, fast-spreading puddle",
+        mu: 2, lam: 200, kappa: 201.33, inv_dt: 4800,
+        results: {initial_com_y:0.55191, min_com_y:0.01255, final_com_y:0.01274, min_particle_y_all_frames:0.00036, floor_penetration:false, floor_contact_time_s:0.29688, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1991, final_extents_xyz:[0.6492,0.0681,0.6544], max_extent_xyz:[0.6492,0.199,0.6544], final_deformation_stretch:null, max_deformation_stretch:null},
+      },
+      b: {
+        id: "003b_newtonian_sphere_free_fall_test_honey",
+        label: "Honey-like",
+        tagline: "μ raised to 500 Pa·s (250x) → slow, thick, barely spreads",
+        mu: 500, lam: 800, kappa: 1133.33, inv_dt: 4800,
+        results: {initial_com_y:0.54534, min_com_y:0.03456, final_com_y:0.03456, min_particle_y_all_frames:0.01215, floor_penetration:false, floor_contact_time_s:0.29667, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1994, final_extents_xyz:[0.273,0.0468,0.2714], max_extent_xyz:[0.273,0.1998,0.2714], final_deformation_stretch:null, max_deformation_stretch:null},
+      },
+    },
+  },
+
+  sand: {
+    label: "Sand",
+    idPrefix: "004",
+    modelType: "MPMSimulator.drucker_prager",
+    modelNote: "Klár et al. Drucker-Prager sand plasticity: a no-tension cutoff plus a frictional yield surface scaled by friction_alpha, sharing the same Hencky-stress formula as elasticity/von_mises (only the plastic return-mapping differs). Floor collider: surface_sticky (grains settle wherever they land, like real granular material). IMPORTANT CAVEAT (found during verification, not before): the Blender visualization only ever renders a single smoothly-deformed sphere driven by the aggregate bounding-box center/extent — it has no way to show individual grains forming a heap with an angle of repose, regardless of the physics underneath. And empirically, at these impact energies, raising friction_alpha increased final lateral spread rather than decreasing it (re-verified in isolation with mu/lam held fixed at 3000 for both: alpha=0.02 → extent_x 0.403, alpha=0.6 → extent_x 0.452) — the no-tension cutoff (particles that locally dilate get reset straight to zero deviatoric strain, independent of friction_alpha) dominates the outcome for a sphere splatting on impact, and a larger admissible elastic shear region at high alpha lets particles carry more outward shear into the impact rather than damping it out immediately. So this pair is labeled by what's actually visible (tighter vs. wider squash) rather than a 'quicksand vs. packed pile' story the renderer can't actually depict.",
+    axis: "friction_alpha (frictional yield-surface slope, ≈ tan of the internal friction angle) — pushed to opposite ends, but see the caveat above before assuming which end looks more 'packed'.",
+    variants: {
+      a: {
+        id: "004a_sand_sphere_free_fall_test_quicksand",
+        label: "Low Friction (0.02)",
+        tagline: "friction_alpha = 0.02 (near-frictionless) → tighter, more compact squash than the high-friction variant",
+        mu: 1500, lam: 1500, E: 3750, nu: 0.25, friction_alpha: 0.02, inv_dt: 4800,
+        note: "Sim ID/folder name says 'quicksand' (the originally-intended framing) but ended up the more compact of the pair, not the more fluid-spreading one — see the model caveat above.",
+        results: {initial_com_y:0.54441, min_com_y:0.01786, final_com_y:0.06393, min_particle_y_all_frames:0.00326, floor_penetration:false, floor_contact_time_s:0.29646, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1986, final_extents_xyz:[0.3376,0.1034,0.3529], max_extent_xyz:[0.3376,0.1974,0.3529], final_deformation_stretch:0.0, max_deformation_stretch:0.26613, max_deformation_stretch_frame:1682},
+      },
+      b: {
+        id: "004b_sand_sphere_free_fall_test_packed",
+        label: "High Friction (0.6)",
+        tagline: "friction_alpha = 0.6 (≈40° friction angle, dry-sand range) → wider final spread than the low-friction variant",
+        mu: 6000, lam: 6000, E: 15000, nu: 0.25, friction_alpha: 0.6, inv_dt: 4800,
+        note: "Sim ID/folder name says 'packed' (the originally-intended framing) but ended up the wider-spreading of the pair, not the compact heap — see the model caveat above.",
+        results: {initial_com_y:0.54694, min_com_y:0.03194, final_com_y:0.03547, min_particle_y_all_frames:0.0113, floor_penetration:false, floor_contact_time_s:0.29688, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.199, final_extents_xyz:[0.4561,0.0991,0.4211], max_extent_xyz:[0.4561,0.1983,0.4211], final_deformation_stretch:0.00593, max_deformation_stretch:0.09501, max_deformation_stretch_frame:1564},
+      },
+    },
+  },
+
+  nonNewtonian: {
+    label: "Non-Newtonian",
+    idPrefix: "005",
+    modelType: "MPMSimulator.von_mises",
+    modelNote: "Same von_mises elastoplastic model as plasticine (despite the 'non_newtonian' preset name inherited from UniPhy) — not an actual rate-dependent fluid (that's 003 newtonian, viscous_fluid). Floor collider: surface_sticky. Differentiated from plasticine by pushing plastic_viscosity (rate-dependence of the yield return-mapping) to opposite extremes instead of yield_stress.",
+    axis: "plastic_viscosity (rate-dependent resistance to yielding) — low means it snaps onto the yield surface almost instantly once yield_stress is exceeded (shear-thinning-like); high means it resists sudden deformation and only gradually gives way (shear-thickening-like).",
+    variants: {
+      a: {
+        id: "005a_non_newtonian_sphere_free_fall_test_thinning",
+        label: "Shear-Thinning",
+        tagline: "low yield_stress (300) + low plastic_viscosity (0.02) → gives way readily, floppy",
+        mu: 300, lam: 300, E: 750, nu: 0.25, yield_stress: 300, plastic_viscosity: 0.02, inv_dt: 4800,
+        note: "min_particle_y_all_frames is slightly negative (-0.0014, ~1.4mm) — a small sub-grid-cell floor penetration from explicit MPM's one-substep-late collision response, not a modeling bug (no other sim shows it at a meaningful magnitude).",
+        results: {initial_com_y:0.54949, min_com_y:0.00898, final_com_y:0.02033, min_particle_y_all_frames:-0.00138, floor_penetration:true, floor_contact_time_s:0.29667, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1998, final_extents_xyz:[0.2081,0.053,0.207], max_extent_xyz:[0.2081,0.1998,0.207], final_deformation_stretch:0.32567, max_deformation_stretch:0.43206, max_deformation_stretch_frame:1736},
+      },
+      b: {
+        id: "005b_non_newtonian_sphere_free_fall_test_thickening",
+        label: "Shear-Thickening",
+        tagline: "high yield_stress (2500) + high plastic_viscosity (8) → resists the impact, stiffens up",
+        mu: 1200, lam: 1200, E: 3000, nu: 0.25, yield_stress: 2500, plastic_viscosity: 8, inv_dt: 4800,
+        results: {initial_com_y:0.55445, min_com_y:0.02083, final_com_y:0.08227, min_particle_y_all_frames:0.00462, floor_penetration:false, floor_contact_time_s:0.29667, free_fall_max_deviation:0.0003, free_fall_validated:true, original_diameter:0.1991, final_extents_xyz:[0.264,0.1025,0.2564], max_extent_xyz:[0.2641,0.1995,0.2567], final_deformation_stretch:0.114, max_deformation_stretch:0.28345, max_deformation_stretch_frame:1726},
+      },
+    },
+  },
+};
+
 function renderJSONValue(v) {
+  if (v === null) return `<span class="json-val">null</span>`;
   if (typeof v === 'string') return `<span class="json-val-str">"${v}"</span>`;
   if (typeof v === 'boolean') return `<span class="json-val-highlight">${v}</span>`;
   return `<span class="json-val">${v}</span>`;
@@ -1264,246 +677,130 @@ function renderJSONBlock(obj, indent = 0) {
   return renderJSONValue(obj);
 }
 
-function renderFileTree(files, indent = 0) {
-  let html = '';
-  for (const f of files) {
-    const pad = '&nbsp;'.repeat(indent * 4);
-    const prefix = indent === 0 ? '' : (f.children ? '├── ' : '├── ');
-    if (f.type === 'folder') {
-      html += `<div class="tree-folder">${pad}${prefix}📁 ${f.name}</div>`;
-      if (f.children) html += renderFileTree(f.children, indent + 1);
-    } else {
-      html += `<div class="${f.highlight ? 'tree-file highlight' : 'tree-file'}">${pad}${prefix}📄 ${f.name}<span class="tree-size">${f.size || ''}</span></div>`;
-    }
-  }
-  return html;
-}
+function showComingSoon(el) {}
 
-function selectSim(id, el) {
-  document.querySelectorAll('.sim-item').forEach(item => item.classList.remove('active'));
-  if (el) el.classList.add('active');
-
-  const sim = SIMULATIONS[id];
-  if (!sim) return;
-
-  const view = document.getElementById('sim-view');
-  view.className = 'fade-in';
-  void view.offsetWidth;
-
-  const r = sim.results;
+function variantCard(variant, key, material) {
+  const r = variant.results;
   const ffBadge = r.free_fall_validated
     ? `<span class="result-badge result-pass">✓ pass</span>`
     : `<span class="result-badge result-fail">✗ fail</span>`;
   const penBadge = r.floor_penetration
-    ? `<span class="result-badge result-fail">✗ detected</span>`
+    ? `<span class="result-badge result-fail">△ ${Math.abs(r.min_particle_y_all_frames*1000).toFixed(1)}mm</span>`
     : `<span class="result-badge result-pass">✓ none</span>`;
 
-  view.innerHTML = `
-    <div class="sim-header">
-      <div>
-        <div class="sim-title">Simulation <span>${sim.id}</span></div>
-        <div style="margin-top:0.4rem;">
-          <span class="tag tag-elastic">${sim.material.type}</span>
-          <span class="tag tag-poke">${sim.geometry} · ${sim.interaction}</span>
-          <span class="tag tag-4cam">${sim.framework.name}</span>
-        </div>
-        <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--teal-mid);max-width:62ch;line-height:1.6;">
-          ${sim.raw_metadata.description}
-        </p>
-      </div>
-    </div>
+  const paramCards = [];
+  if (variant.E !== undefined) {
+    paramCards.push(`<div class="meta-card"><div class="meta-key">E (Young's Mod.)</div><div class="meta-val highlight">${variant.E.toLocaleString()} Pa</div></div>`);
+    paramCards.push(`<div class="meta-card"><div class="meta-key">nu (Poisson)</div><div class="meta-val highlight">${variant.nu}</div></div>`);
+  }
+  paramCards.push(`<div class="meta-card"><div class="meta-key">mu</div><div class="meta-val">${variant.mu.toLocaleString()}</div></div>`);
+  paramCards.push(`<div class="meta-card"><div class="meta-key">lambda</div><div class="meta-val">${variant.lam.toLocaleString()}</div></div>`);
+  if (variant.kappa !== undefined) {
+    paramCards.push(`<div class="meta-card"><div class="meta-key">kappa (bulk)</div><div class="meta-val">${variant.kappa}</div></div>`);
+  }
+  if (variant.yield_stress !== undefined) {
+    paramCards.push(`<div class="meta-card"><div class="meta-key">yield_stress</div><div class="meta-val highlight-orange">${variant.yield_stress.toLocaleString()} Pa</div></div>`);
+    paramCards.push(`<div class="meta-card"><div class="meta-key">plastic_viscosity</div><div class="meta-val">${variant.plastic_viscosity}</div></div>`);
+  }
+  if (variant.friction_alpha !== undefined) {
+    paramCards.push(`<div class="meta-card"><div class="meta-key">friction_alpha</div><div class="meta-val highlight-orange">${variant.friction_alpha}</div></div>`);
+  }
+  paramCards.push(`<div class="meta-card"><div class="meta-key">inv_dt</div><div class="meta-val">${variant.inv_dt}</div></div>`);
 
-    <!-- FRAMEWORK NOTE -->
-    <div class="section">
-      <div class="section-header">⚡ Framework</div>
-      <div class="section-body">
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-key">Method</div>
-            <div class="meta-val">${sim.framework.method}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Engine Version</div>
-            <div class="meta-val">${sim.framework.warp_version}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Reference</div>
-            <div class="meta-val"><a href="${sim.framework.reference}" target="_blank" style="color:var(--teal);text-decoration:none;">UniPhy_CVPR2025 ↗</a></div>
-          </div>
-        </div>
-        <div style="margin-top:0.75rem;font-size:0.72rem;color:var(--muted);line-height:1.6;">
-          ${sim.framework.note}
+  return `
+    <div class="variant-card">
+      <div class="variant-header ${key}">
+        <div>
+          <div class="variant-label">${variant.label}</div>
+          <div class="variant-id">${variant.id}</div>
         </div>
       </div>
-    </div>
-
-    <!-- MATERIAL PROPERTIES -->
-    <div class="section">
-      <div class="section-header">⭐ Material Properties (ML Prediction Targets)</div>
-      <div class="section-body">
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-key">E — Young's Modulus</div>
-            <div class="meta-val highlight">${sim.material.E != null ? sim.material.E.toLocaleString() + ' Pa' : 'N/A'}</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">${sim.material.E != null ? 'Stiffness' : 'Rate-dependent fluid — stress depends on strain rate, not accumulated strain, so no elastic modulus applies'}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">nu — Poisson's Ratio</div>
-            <div class="meta-val highlight">${sim.material.nu != null ? sim.material.nu : 'N/A'}</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">${sim.material.nu != null ? 'Compressibility factor' : 'N/A for a viscous fluid'}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">rho — Density</div>
-            <div class="meta-val highlight">${sim.material.rho.toLocaleString()} kg/m³</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">Water-like</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">${sim.material.mu_label || "mu — Lamé 1st parameter"}</div>
-            <div class="meta-val">${sim.material.mu.toLocaleString()} ${sim.material.mu_unit || 'Pa'}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">${sim.material.lam_label || "lambda — Lamé 2nd parameter"}</div>
-            <div class="meta-val">${sim.material.lam.toLocaleString()} ${sim.material.lam_unit || 'Pa'}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Geometry</div>
-            <div class="meta-val highlight-orange">${sim.object.shape} · radius ${sim.object.radius}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Particles</div>
-            <div class="meta-val">${sim.object.num_particles.toLocaleString()}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Total Mass</div>
-            <div class="meta-val">${sim.object.total_mass_kg} kg</div>
-          </div>
-        </div>
-        <div style="margin-top:0.75rem;font-size:0.7rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">
-          source: ${sim.material.source}
-        </div>
-      </div>
-    </div>
-
-    <!-- SIMULATION PARAMS -->
-    <div class="section">
-      <div class="section-header">⚙ Global Simulation Parameters</div>
-      <div class="section-body">
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-key">Domain</div>
-            <div class="meta-val">${sim.scene.domain}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Grid Resolution</div>
-            <div class="meta-val">${sim.scene.num_grids}³ (dx=${sim.scene.dx})</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">dt</div>
-            <div class="meta-val">${sim.scene.dt}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">num_steps</div>
-            <div class="meta-val">${sim.scene.num_steps} (${(sim.scene.num_steps * sim.scene.dt).toFixed(2)} s)</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">gravity</div>
-            <div class="meta-val">${sim.scene.gravity} m/s²</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Boundary</div>
-            <div class="meta-val">${sim.scene.boundary_condition}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Floor y</div>
-            <div class="meta-val">${sim.scene.floor_y}</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Quality Preset</div>
-            <div class="meta-val">${sim.scene.quality_preset}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SIMULATION VIDEO -->
-    <div class="section">
-      <div class="section-header">🎬 Simulation Render</div>
-      <div class="section-body">
+      <div class="variant-body">
+        <p style="font-size:0.78rem;color:var(--teal-mid);margin-bottom:0.9rem;line-height:1.5;">${variant.tagline}</p>
         <div class="video-wrap">
           <div class="video-card">
-            <img src="${sim.video}" alt="Simulation render (animated GIF)">
-            <div class="video-caption">${sim.video_caption}</div>
+            <img src="simulation/renders/sphere_drop_${variant.id}.gif" alt="${variant.label} render">
+            <div class="video-caption">Blender render (Cycles/OptiX)</div>
           </div>
           <div class="video-card">
-            <img src="${sim.diagnostics_image}" alt="Shape diagnostics plot">
-            <div class="video-caption">${sim.diagnostics_caption}</div>
+            <img src="simulation/renders/shape_diagnostics_${variant.id}.png" alt="${variant.label} diagnostics">
+            <div class="video-caption">extents + deformation vs. frame</div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- VALIDATION RESULTS -->
-    <div class="section">
-      <div class="section-header">✅ Physics Validation</div>
-      <div class="section-body">
-        <div class="meta-grid">
+        <div class="meta-grid" style="margin-bottom:0.9rem;">
+          ${paramCards.join('\n')}
+        </div>
+        ${variant.note ? `<div style="font-size:0.68rem;color:var(--muted);margin-bottom:0.9rem;line-height:1.5;">${variant.note}</div>` : ''}
+        <div class="meta-grid" style="margin-bottom:0.9rem;">
           <div class="meta-card">
-            <div class="meta-key">Free-fall vs analytical</div>
+            <div class="meta-key">Free-fall check</div>
             <div class="meta-val">${ffBadge}</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">max deviation ${r.free_fall_max_deviation}</div>
           </div>
           <div class="meta-card">
             <div class="meta-key">Floor penetration</div>
             <div class="meta-val">${penBadge}</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">Floor contact time</div>
-            <div class="meta-val">${r.floor_contact_time_s} s</div>
+            <div class="meta-key">Floor contact @</div>
+            <div class="meta-val">${r.floor_contact_time_s}s</div>
           </div>
           <div class="meta-card">
             <div class="meta-key">Final COM height</div>
             <div class="meta-val">${r.final_com_y}</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">Original diameter</div>
-            <div class="meta-val">${r.original_diameter}</div>
+            <div class="meta-key">Final extents (x,y,z)</div>
+            <div class="meta-val" style="font-size:0.72rem;">${r.final_extents_xyz.join(', ')}</div>
           </div>
           <div class="meta-card">
-            <div class="meta-key">Final extents (x, y, z)</div>
-            <div class="meta-val">${r.final_extents_xyz.map(v => v.toFixed(3)).join(', ')}</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">vertical extent ~${((r.final_extents_xyz[1] / r.original_diameter) * 100).toFixed(0)}% of original diameter — flattened on the floor</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-key">Deformation (final / max)</div>
-            <div class="meta-val">${r.final_deformation_stretch != null ? r.final_deformation_stretch.toFixed(3) + ' / ' + r.max_deformation_stretch.toFixed(3) : 'N/A'}</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.3rem;">${r.final_deformation_stretch != null ? 'mean |singular_value(F) - 1|, 0 = undeformed' : 'F is not a real deformation gradient for this material (viscous_fluid tracks only a scalar volume ratio) — see final extents for shape-change instead'}</div>
+            <div class="meta-key">Deformation (final/max)</div>
+            <div class="meta-val" style="font-size:0.72rem;">${r.final_deformation_stretch != null ? r.final_deformation_stretch + ' / ' + r.max_deformation_stretch : 'N/A (no elastic modulus)'}</div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- FILE STRUCTURE -->
-    <div class="section">
-      <div class="section-header">📁 File Structure</div>
-      <div class="section-body">
-        <div class="file-tree">
-          ${renderFileTree(sim.files)}
-        </div>
-      </div>
-    </div>
-
-    <!-- RAW METADATA JSON -->
-    <div class="section">
-      <div class="section-header">{ } metadata.json</div>
-      <div class="section-body">
-        <div class="json-block">${renderJSONBlock(sim.raw_metadata)}</div>
+        <div class="json-block">${renderJSONBlock(r)}</div>
       </div>
     </div>
   `;
 }
 
+function selectMaterial(matKey, el) {
+  document.querySelectorAll('.sim-item').forEach(item => item.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  const mat = MATERIALS[matKey];
+  if (!mat) return;
+
+  const view = document.getElementById('sim-view');
+  view.className = 'fade-in';
+  void view.offsetWidth;
+
+  view.innerHTML = `
+    <div class="sim-header">
+      <div>
+        <div class="sim-title">${mat.idPrefix} <span>${mat.label}</span> — two extremes</div>
+        <div style="margin-top:0.4rem;">
+          <span class="tag tag-elastic">${mat.modelType}</span>
+          <span class="tag tag-poke">sphere · free_fall</span>
+          <span class="tag tag-4cam">UniPhy MLS-MPM (Taichi)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-callout">
+      <b>Constitutive model:</b> ${mat.modelNote}<br><br>
+      <b>Varied axis:</b> ${mat.axis}<br><br>
+      <b>Shared scene:</b> ${SHARED_SCENE.geometry}, ρ=${SHARED_SCENE.rho} kg/m³, gravity=${SHARED_SCENE.gravity[1]} m/s², ${SHARED_SCENE.num_frames} output frames (${SHARED_SCENE.domain}).
+    </div>
+
+    <div class="pair-grid">
+      ${variantCard(mat.variants.a, 'a', mat)}
+      ${variantCard(mat.variants.b, 'b', mat)}
+    </div>
+  `;
+}
+
 // Init
-selectSim('001_elastic_sphere_tissue_free_fall_test', document.querySelector('.sim-item.active'));
+selectMaterial('elastic', document.querySelector('.sim-item.active'));
 </script>
 </body>
 </html>
