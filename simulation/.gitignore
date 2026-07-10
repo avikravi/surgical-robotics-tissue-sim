@@ -200,29 +200,52 @@ dmypy.json
 ## VS Code
 /.vscode
 
-# Large training-data tensors (each ~145MB, exceed GitHub's 100MB per-file limit) —
-# regenerable via dataset_generate.py, see simulation/README.md for the repro command.
+# Large training-data tensors (71-145MB depending on run; some are individually under GitHub's
+# 100MB per-file limit but are gitignored uniformly across every sim for consistency, since
+# they're regenerable via dataset_generate.py, see simulation/README.md for the repro command).
 # (paths below are relative to this .gitignore's directory, i.e. simulation/)
-output/001_elastic_sphere_tissue_free_fall_test/GtC.pt
-output/001_elastic_sphere_tissue_free_fall_test/GtF.pt
-output/001_elastic_sphere_tissue_free_fall_test/GtFtmp.pt
-output/001_elastic_sphere_tissue_free_fall_test/GtStress.pt
-output/002_plasticine_sphere_free_fall_test/GtC.pt
-output/002_plasticine_sphere_free_fall_test/GtF.pt
-output/002_plasticine_sphere_free_fall_test/GtFtmp.pt
-output/002_plasticine_sphere_free_fall_test/GtStress.pt
-output/003_newtonian_sphere_free_fall_test/GtC.pt
-output/003_newtonian_sphere_free_fall_test/GtF.pt
-output/003_newtonian_sphere_free_fall_test/GtFtmp.pt
-output/003_newtonian_sphere_free_fall_test/GtStress.pt
-output/004_sand_sphere_free_fall_test/GtC.pt
-output/004_sand_sphere_free_fall_test/GtF.pt
-output/004_sand_sphere_free_fall_test/GtFtmp.pt
-output/004_sand_sphere_free_fall_test/GtStress.pt
-output/005_non_newtonian_sphere_free_fall_test/GtC.pt
-output/005_non_newtonian_sphere_free_fall_test/GtF.pt
-output/005_non_newtonian_sphere_free_fall_test/GtFtmp.pt
-output/005_non_newtonian_sphere_free_fall_test/GtStress.pt
+# 001-005 (single "middle of the road" preset per material) were superseded by paired
+# extreme-parameter variants 001a/001b .. 005a/005b (see CLAUDE.md).
+output/001a_elastic_sphere_tissue_free_fall_test_soft/GtC.pt
+output/001a_elastic_sphere_tissue_free_fall_test_soft/GtF.pt
+output/001a_elastic_sphere_tissue_free_fall_test_soft/GtFtmp.pt
+output/001a_elastic_sphere_tissue_free_fall_test_soft/GtStress.pt
+output/001b_elastic_sphere_tissue_free_fall_test_stiff/GtC.pt
+output/001b_elastic_sphere_tissue_free_fall_test_stiff/GtF.pt
+output/001b_elastic_sphere_tissue_free_fall_test_stiff/GtFtmp.pt
+output/001b_elastic_sphere_tissue_free_fall_test_stiff/GtStress.pt
+output/002a_plasticine_sphere_free_fall_test_runny/GtC.pt
+output/002a_plasticine_sphere_free_fall_test_runny/GtF.pt
+output/002a_plasticine_sphere_free_fall_test_runny/GtFtmp.pt
+output/002a_plasticine_sphere_free_fall_test_runny/GtStress.pt
+output/002b_plasticine_sphere_free_fall_test_stiff/GtC.pt
+output/002b_plasticine_sphere_free_fall_test_stiff/GtF.pt
+output/002b_plasticine_sphere_free_fall_test_stiff/GtFtmp.pt
+output/002b_plasticine_sphere_free_fall_test_stiff/GtStress.pt
+output/003a_newtonian_sphere_free_fall_test_watery/GtC.pt
+output/003a_newtonian_sphere_free_fall_test_watery/GtF.pt
+output/003a_newtonian_sphere_free_fall_test_watery/GtFtmp.pt
+output/003a_newtonian_sphere_free_fall_test_watery/GtStress.pt
+output/003b_newtonian_sphere_free_fall_test_honey/GtC.pt
+output/003b_newtonian_sphere_free_fall_test_honey/GtF.pt
+output/003b_newtonian_sphere_free_fall_test_honey/GtFtmp.pt
+output/003b_newtonian_sphere_free_fall_test_honey/GtStress.pt
+output/004a_sand_sphere_free_fall_test_quicksand/GtC.pt
+output/004a_sand_sphere_free_fall_test_quicksand/GtF.pt
+output/004a_sand_sphere_free_fall_test_quicksand/GtFtmp.pt
+output/004a_sand_sphere_free_fall_test_quicksand/GtStress.pt
+output/004b_sand_sphere_free_fall_test_packed/GtC.pt
+output/004b_sand_sphere_free_fall_test_packed/GtF.pt
+output/004b_sand_sphere_free_fall_test_packed/GtFtmp.pt
+output/004b_sand_sphere_free_fall_test_packed/GtStress.pt
+output/005a_non_newtonian_sphere_free_fall_test_thinning/GtC.pt
+output/005a_non_newtonian_sphere_free_fall_test_thinning/GtF.pt
+output/005a_non_newtonian_sphere_free_fall_test_thinning/GtFtmp.pt
+output/005a_non_newtonian_sphere_free_fall_test_thinning/GtStress.pt
+output/005b_non_newtonian_sphere_free_fall_test_thickening/GtC.pt
+output/005b_non_newtonian_sphere_free_fall_test_thickening/GtF.pt
+output/005b_non_newtonian_sphere_free_fall_test_thickening/GtFtmp.pt
+output/005b_non_newtonian_sphere_free_fall_test_thickening/GtStress.pt
 
 # Hydra's own run-log directory (config snapshot + dataset_generate.log per run) —
 # not simulation output, gitignored globally rather than per-run-timestamp.
