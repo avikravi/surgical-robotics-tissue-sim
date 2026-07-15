@@ -246,6 +246,11 @@ output/005b_non_newtonian_sphere_free_fall_test_thickening/GtC.pt
 output/005b_non_newtonian_sphere_free_fall_test_thickening/GtF.pt
 output/005b_non_newtonian_sphere_free_fall_test_thickening/GtFtmp.pt
 output/005b_non_newtonian_sphere_free_fall_test_thickening/GtStress.pt
+# 011: rigid probe poking an elastic tissue sphere (001a material, new probe collider).
+output/011_elastic_sphere_probe_poke_test/GtC.pt
+output/011_elastic_sphere_probe_poke_test/GtF.pt
+output/011_elastic_sphere_probe_poke_test/GtFtmp.pt
+output/011_elastic_sphere_probe_poke_test/GtStress.pt
 
 # Hydra's own run-log directory (config snapshot + dataset_generate.log per run) —
 # not simulation output, gitignored globally rather than per-run-timestamp.

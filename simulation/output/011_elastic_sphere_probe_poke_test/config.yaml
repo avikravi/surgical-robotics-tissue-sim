@@ -1,0 +1,61 @@
+objects:
+  sphere:
+    geometry:
+      num_particles: 500
+      pos_x: 0.55
+      pos_y: 0.55
+      pos_z: 0
+      rot_x: 45
+      rot_y: 90
+      rot_z: 45
+      sdf_func: sphere
+      sdf_params:
+      - 0.1
+    material:
+      friction_alpha: 0.0
+      inv_dt: 4800
+      inv_frame_dt: 24.0
+      lam: 46552
+      material_type: MPMSimulator.elasticity
+      mu: 5172
+      object_material: elastic
+      plastic_viscosity: 1.0
+      rho: 928.8232
+      velocity:
+      - 0
+      - 0
+      - 0
+      yield_stress: 1.0
+probe:
+  note: One-way analytic sphere collider (surface_separate), NOT a real rigid body
+    -- see add_sphere_collider() in mpm_simulator_perparticleparams.py.
+  radius: 0.06
+  substep_descend_end: 1700
+  substep_hold_end: 1850
+  substep_park_end: 1400
+  substep_total: 2000
+  x: 0.55
+  y_park: 1.0
+  y_poke: 0.02
+  z: 0.0
+simulator_cfg:
+  BC:
+    ground:
+    - - 0
+      - 0
+      - 0
+    - - 0
+      - 1
+      - 0
+  dtype: float32
+  gravity:
+  - 0
+  - -9.8
+  - 0
+train_cfg:
+  cuda_chunk_size: 2048
+  local_dir: /home/elec594/Desktop/surgical-robotics-tissue-sim/simulation/output
+  particles_ti_root: 1024
+  save_dir: 011_elastic_sphere_probe_poke_test
+visualization_cfg:
+  num_frames: 10
