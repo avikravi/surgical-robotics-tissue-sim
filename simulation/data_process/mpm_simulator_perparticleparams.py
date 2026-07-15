@@ -453,6 +453,44 @@ class MPMSimulator:
 
         self.analytic_collision.append(get_velocity)
 
+    def add_sphere_collider(self,
+                            center,
+                            radius,
+                            surface=surface_sticky):
+        """Same analytic_collision mechanism as add_surface_collider/add_cylinder_collider
+        above (grid_op already generically applies every closure in that list, so nothing
+        about grid_op needed to change), but with one difference: `center` must be a
+        ti.Vector.field(dim, dtype, shape=()) rather than a plain Python list. The floor/
+        cylinder colliders bake their position in as a compile-time constant captured by
+        the closure, which is fine for a static boundary but can't move. Passing a mutable
+        field instead means the caller can do `center[None] = ti.Vector([...])` once per
+        substep (a plain field write, not a kernel) to animate the collider -- this is the
+        smallest change that supports a moving analytic collider (e.g. a poking probe)
+        without touching grid_op or the other colliders.
+        """
+        radius = float(radius)
+
+        @ti.func
+        def get_velocity(I, v):
+            offset = I.cast(self.dtype) * self.dx[None] - center[None]
+            dist = self.norm(offset)
+            if dist <= radius:
+                n = offset / dist
+                if ti.static(surface == self.surface_sticky):
+                    v = ti.Vector.zero(self.dtype, self.dim)
+                else:
+                    normal_component = n.dot(v)
+                    if ti.static(surface == self.surface_slip):
+                        # Project out all normal component
+                        v = v - n * normal_component
+                    else:
+                        # Project out only inward normal component
+                        v = v - n * min(normal_component, 0)
+
+            return v
+
+        self.analytic_collision.append(get_velocity)
+
     def add_surface_collider(self,
                              point,
                              normal,
