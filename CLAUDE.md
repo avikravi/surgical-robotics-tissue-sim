@@ -156,6 +156,73 @@ The `simulation/` tree used to be a full clone of `HimangiM/UniPhy_CVPR2025` (ow
 
 If you need something from one of these (e.g. a different object geometry, a different material preset, or the NCLaw training pipeline), it's gone from this repo — ask before trying to re-vendor it wholesale; a targeted re-add of just what's needed is preferable to pulling the whole UniPhy tree back in.
 
+## `simulation/inverse_problem/` — material calibration via inverse optimization (001a only)
+
+`calibrate_material.py`: recovers a sim's elastic material parameters (Young's modulus E,
+Poisson's ratio ν) by treating the repo's own forward MPM solver
+(`data_process/mpmwrapper_perparticleparams.py`) as a black box and derivative-free-optimizing
+(scipy Nelder-Mead) candidate `(E, ν)` against the sim's recorded ground-truth trajectory
+(`GtX.pt`). No NCLaw, no learned latent, no external checkpoint. Run from `data_process/` (the
+script resolves its sibling import relative to its own file location, not cwd, so this isn't
+strictly required, but keeps `--sim_dir`/`--output_json` paths short and consistent with the
+other scripts in this doc):
+```bash
+cd simulation/data_process
+conda run -n uniphy python3 ../inverse_problem/calibrate_material.py \
+  --sim_dir ../output/001a_elastic_sphere_tissue_free_fall_test_soft \
+  --output_json ../inverse_problem/results/001a_calibration.json \
+  --max_iters 15
+```
+
+**Verified on `001a` only** (2026-07-22) — E=14895 recovered vs. true 14999 (0.69% off), ν=0.4486
+vs. true 0.4500 (0.30% off) over 28 evaluations, loss descending smoothly from ~1.8e-5 to ~8.8e-10.
+Not yet run against the other 9 sims; don't assume it generalizes without checking (different
+materials have very different constitutive models — von_mises/drucker_prager/viscous_fluid don't
+even share elastic (E, ν) as their governing parameters the way `elasticity` does, so this
+specific 2-parameter script wouldn't apply as-is).
+
+**Known limitations, by design, not bugs to fix casually:**
+- **Ground-truth-seeded, not video-derived.** `run_forward()` seeds the candidate rollout's
+  particle positions/velocities directly from the ground truth's own recorded `GtX[0]`/`GtV[0]`
+  (via `wrapper.init_particles`/`wrapper.init_velocities`, overriding `MPMWrapper.__init__`'s
+  default random SDF resample) rather than from anything derived from real video — a genuine
+  RGB-video inverse problem wouldn't have this. This was a deliberate fix (see git history / this
+  file's earlier notes) to eliminate resampling noise (`np.random.choice` in
+  `mpmwrapper_perparticleparams.py`'s `MPMWrapper.__init__` has no fixed seed), which dropped the
+  loss floor by ~13 orders of magnitude at identical parameters (~6e-3 -> ~1.5e-16) — but it means
+  this script currently answers "can the solver recover parameters given the true initial state,"
+  not "can parameters be recovered from an image/video-derived initial state," a materially easier
+  problem. Safe specifically because it seeds at t=0 (F=identity, C=zero are correct there); would
+  not be safe to seed from any other frame's recorded state.
+- **Derivative-free, 2-parameter only.** Nelder-Mead over `(log E, sigmoid-squashed ν)` — no
+  gradients, doesn't scale gracefully to more parameters (would need a different optimizer, e.g.
+  something exploiting Taichi's autodiff, for materials with more than 2 free parameters like
+  von_mises's `yield_stress`/`plastic_viscosity` or drucker_prager's `friction_alpha`).
+- **`initial_simplex` must be explicit**, not scipy's default: any `x0` coordinate that's exactly
+  `0` (the `nu_raw` parameterization starts there) gets a scipy-internal tiny 0.00025 absolute
+  perturbation instead of a 5% relative one when scipy auto-builds the initial simplex, which left
+  ν completely unexplored in earlier runs regardless of rollout length — fixed by passing an
+  explicit `initial_simplex` with a deliberate, comparable step in both dimensions
+  (`step_E=0.3, step_nu=1.0`). If you add more free parameters, re-check this — scipy's default
+  simplex is unsafe for any parameterization where an initial value can land at exactly 0.
+- **`--num_frames_opt` defaults to the sim's own full length**, not a short rollout: verified via
+  direct timing (`run_forward(..., verbose_timing=True)`, or `--verbose`) that per-call cost is
+  dominated by `ti.reset()`/`ti.init()` overhead (~10-20s), not substep count — a 4-frame vs.
+  10-frame rollout showed no consistent timing difference, so there's no real speed trade-off for
+  using the full length, and the full length is needed for `ν` to be identifiable at all (floor
+  contact, where Poisson's ratio actually affects the trajectory, doesn't happen during pure
+  free-fall). A diagnostic sweep at fixed E=15000 across `ν ∈ [0.1, 0.49]` (full-length rollout)
+  showed an 8-orders-of-magnitude loss range with a razor-sharp minimum exactly at the true
+  ν=0.45 — confirms ν actually is strongly identifiable once floor contact is in the window, this
+  isn't a permanently-flat-loss physical-identifiability problem.
+- Output JSON (`simulation/inverse_problem/results/001a_calibration.json`) includes
+  `trajectory_summaries` (per-evaluation `{iteration, E, nu, loss, centroid, extent}`, lightweight
+  per-frame summaries — not the full particle tensor — for **every** evaluation including
+  non-improving probes, so the real Nelder-Mead search path including backtracking can be
+  inspected/plotted) and `ground_truth_trajectory` (the same per-frame centroid/extent computed
+  once from `GtX.pt`, so a consumer doesn't need to load `GtX.pt` directly). `dataset_viewer.html`
+  visualizes both (see below).
+
 ## `dataset_viewer.html`
 
 Standalone, dependency-free static HTML/JS page (no build step), deployed via GitHub Pages.
@@ -173,8 +240,20 @@ geometry/gravity/grid config that's identical across every sim, so it isn't dupl
   — the id-based path convention means adding a new variant only needs one `id` field, not four.
 - File paths are relative to the HTML file's own location (repo root, since GitHub Pages serves
   from there).
+- A separate sidebar section ("Inverse Problem" / "001a · Calibration",
+  `selectCalibrationPanel()`) visualizes `simulation/inverse_problem/results/001a_calibration.json`
+  — loaded via `fetch()` at page load into a shared `CALIB_DATA_PROMISE` (this is the *only*
+  fetch()-based data loading in the file; `MATERIALS`/`SHARED_SCENE` above are hand-authored
+  inline instead, so don't assume a general fetch-from-JSON convention exists beyond this one
+  panel). Hand-drawn Canvas 2D charts (no charting library): a parameter-space search-path plot
+  (log E vs. ν, points colored by loss, connected in evaluation order so backtracking is visible,
+  true value marked), a trajectory overlay (ground-truth vs. selected-evaluation centroid height
+  vs. frame), a slider over all logged evaluations (defaults to the actual argmin(loss) entry, not
+  necessarily the literal last array index), and a result-summary strip with a log-scale
+  loss-vs-evaluation plot. This panel is additive and independent of the 5-material
+  `selectMaterial()` viewer above — don't couple the two.
 
-No JS runtime (`node` etc.) is installed on this dev machine to lint/typecheck the inline script — sanity-check edits with a brace/paren/bracket balance count (and a backtick-parity count, since the template-literal-heavy render functions are the likeliest source of a subtle break) or by opening the file in a browser (`xdg-open`/`firefox dataset_viewer.html`, X11 display already available on this machine) rather than assuming a `node --check` step is available.
+No JS runtime (`node` etc.) is installed on this dev machine to lint/typecheck the inline script — sanity-check edits with a brace/paren/bracket balance count (and a backtick-parity count, since the template-literal-heavy render functions are the likeliest source of a subtle break) or by opening the file in a browser (`xdg-open`/`firefox dataset_viewer.html`, X11 display already available on this machine) rather than assuming a `node --check` step is available. If a Firefox session is already running under the user's own profile, don't reuse it for headless screenshot testing (`firefox --headless --screenshot` fails against an already-running instance anyway) — use a separate `-profile <scratch-dir>` instead. `fetch()` calls are blocked by CORS under `file://` — serve over `python3 -m http.server` (matches how GitHub Pages actually serves this file) rather than opening the file directly when testing anything that fetches JSON.
 
 ## `notebooks/review_trajectories.ipynb`
 

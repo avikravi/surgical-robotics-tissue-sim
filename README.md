@@ -25,9 +25,15 @@ per-sim table, reproduction commands, and pipeline details.
     render (`renders/sphere_drop_<id>.gif`).
   - `analyze_sim.py`, `compute_diagnostics.py`, `compute_keyframes.py` — validation/analysis
     scripts run against a sim's output directory.
+  - `inverse_problem/` — `calibrate_material.py`, a derivative-free inverse-problem script
+    that recovers a sim's material parameters (E, ν) by optimizing the forward MPM solver
+    against its own recorded ground-truth trajectory. Verified on `001a` only so far; see
+    `CLAUDE.md` for scope and known limitations.
 - `notebooks/review_trajectories.ipynb` — loads a sim's raw tensors, prints shapes/dtypes/particle
   counts, and plots a quick 3D scatter + trajectory summary, for eyeballing any sim's raw data.
-- `dataset_viewer.html` — standalone dataset browser, deployed via GitHub Pages.
+- `dataset_viewer.html` — standalone dataset browser, deployed via GitHub Pages. Includes an
+  "Inverse Problem" panel visualizing the `001a` calibration search (parameter-space path,
+  trajectory overlay, convergence).
 
 ## Research Context
 
