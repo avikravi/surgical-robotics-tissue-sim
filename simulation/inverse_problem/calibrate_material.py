@@ -186,8 +186,28 @@ def trajectory_loss(pred_x, gt_x):
     return torch.mean((pred - gt) ** 2).item()
 
 
-def make_objective(cfg, gt_x, gt_x0, gt_v0, num_frames_opt, log, verbose=False):
+def summarize_trajectory(x, n_substeps, num_frames):
+    """Per-frame centroid (mean particle position) and bounding-box extent, sampled at frame
+    boundaries from a (T, P, 3) substep-indexed position array -- a lightweight summary
+    (2 * num_frames * 3 floats) for logging/plotting, not the full per-substep particle tensor.
+    Includes frame 0 (a real recorded state for GtX/pred_x, unlike GtF's frame 0 -- see the
+    module docstring's dt/frame gotcha reference).
+    """
+    x = np.asarray(x)
+    centroids, extents = [], []
+    for f in range(num_frames):
+        row = min(f * n_substeps, x.shape[0] - 1)
+        frame_x = x[row]
+        centroids.append(frame_x.mean(axis=0).tolist())
+        extents.append((frame_x.max(axis=0) - frame_x.min(axis=0)).tolist())
+    return centroids, extents
+
+
+def make_objective(cfg, gt_x, gt_x0, gt_v0, num_frames_opt, n_substeps, log, trajectory_summaries,
+                    verbose=False):
     def objective(params):
+        iteration = len(log)  # shared counter so trajectory_summaries indices line up with
+                               # optimizer_iterations_log even if a CFL-violated eval is skipped
         log_E, nu_raw = params
         E = float(np.exp(log_E))
         # squash nu into a physically valid range (avoid the lam singularity at nu=0.5)
@@ -202,6 +222,13 @@ def make_objective(cfg, gt_x, gt_x0, gt_v0, num_frames_opt, log, verbose=False):
 
         loss = trajectory_loss(pred_x, gt_x[:pred_x.shape[0]])
         log.append({"E": E, "nu": nu, "loss": loss})
+
+        centroid, extent = summarize_trajectory(pred_x.numpy(), n_substeps, num_frames_opt)
+        trajectory_summaries.append({
+            "iteration": iteration, "E": E, "nu": nu, "loss": loss,
+            "centroid": centroid, "extent": extent,
+        })
+
         print(f"  E={E:9.2f}  nu={nu:.4f}  loss={loss:.6e}")
         return loss
 
@@ -245,7 +272,9 @@ def main():
           f"a real RGB-video inverse problem won't have this): E={true_E:.2f}, nu={true_nu:.4f}")
 
     log = []
-    objective = make_objective(cfg, gt_x, gt_x0, gt_v0, args.num_frames_opt, log, verbose=args.verbose)
+    trajectory_summaries = []
+    objective = make_objective(cfg, gt_x, gt_x0, gt_v0, args.num_frames_opt, n_substeps, log,
+                                trajectory_summaries, verbose=args.verbose)
 
     x0 = np.array([np.log(args.init_E), 0.0])  # nu_raw=0 -> nu=0.01+0.24=0.25 at init
     # scipy's default initial-simplex construction perturbs each x0 coordinate that's != 0 by a
@@ -278,6 +307,10 @@ def main():
                                        gt_x0=gt_x0, gt_v0=gt_v0, verbose_timing=args.verbose)
     final_loss = trajectory_loss(pred_x_full, gt_x) if cfl_ok else None
 
+    # Ground-truth per-frame centroid/extent, computed once, so the viewer has both curves
+    # without needing to load GtX.pt directly in-browser.
+    gt_centroid, gt_extent = summarize_trajectory(gt_x.numpy(), n_substeps, full_num_frames)
+
     os.makedirs(os.path.dirname(args.output_json), exist_ok=True)
     with open(args.output_json, "w") as f:
         json.dump({
@@ -288,6 +321,12 @@ def main():
             "full_rollout_validation_loss": final_loss,
             "num_frames_opt": args.num_frames_opt,
             "optimizer_iterations_log": log,
+            "trajectory_summaries": trajectory_summaries,
+            "ground_truth_trajectory": {
+                "num_frames": full_num_frames,
+                "centroid": gt_centroid,
+                "extent": gt_extent,
+            },
         }, f, indent=2)
 
     print(f"\nSaved results to {args.output_json}")
