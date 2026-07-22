@@ -6,7 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A dataset-generation pipeline for surgical tissue material characterization from RGB video, modeled after the MASIV dataset. Summer research project; related work: DiSECt, GIC, PAC-NeRF, MASIV, UniPhy.
 
-Most `src/` subdirectories (`src/simulate/`, `src/dataset/`, `src/cameras/`) and `data/simulations/`, `data/videos/`, `data/gifs/` are still placeholders (`.gitkeep` only) — the earlier example simulation that lived under `data/simulations/000_elastic_sphere_free_fall/` was deleted as superseded (see "Canonical simulation" below). Don't assume shared library code exists just because a directory is present — check whether it's actually populated first.
+The `data/`, `src/`, and `configs/` directories that used to hold placeholder scaffolding for a
+future Genesis-based pipeline (`.gitkeep`-only subdirectories, plus `configs/metadata_template.json`)
+have been removed entirely — they were never populated, and there is no near-term plan to build
+that pipeline. If you see references to them in old commit messages or docs, they no longer exist
+on disk; don't assume shared library code exists just because a path is mentioned in history.
 
 The repo's real, working code now lives under `simulation/` — a UniPhy_CVPR2025-derived pipeline (Taichi MLS-MPM) that used to be an untracked nested git clone (its own `simulation/.git/`) and has since been pruned down to only what's needed to reproduce the one canonical simulation, and folded into this repo's own git history as regular tracked files.
 
@@ -44,7 +48,7 @@ already 49MB despite only ~11MB of real payload. Not fixed (matches long-standin
 behavior, values load back correctly) — just don't be surprised by the file size, and don't assume
 it's proportional to `num_particles`.
 
-**Reproduction entry point:** `simulation/data_process/dataset_generate.py`, a Hydra script (`config_path='configs'`, i.e. `simulation/data_process/configs/`). It imports `mpmwrapper_perparticleparams.py` → `mpm_simulator_perparticleparams.py` (the actual Taichi MPM kernels: P2G → grid_op → G2P, per-material constitutive models, sparse pointer grid) and `sdf_functions.py` → the vendored `sdf/` package (geometry SDF sampling). None of this imports `nclaw` — that was a separate, now-deleted training/latent-inference codebase (see "What was removed" below).
+**Reproduction entry point:** `simulation/data_process/dataset_generate.py`, a Hydra script (`config_path='configs'`, i.e. `simulation/data_process/configs/`). It imports `mpmwrapper_perparticleparams.py` → `mpm_simulator_perparticleparams.py` (the actual Taichi MPM kernels: P2G → grid_op → G2P, per-material constitutive models, sparse pointer grid) and `sdf_functions.py` → the vendored `sdf/` package (geometry SDF sampling). None of this imports `nclaw` — that was a separate, still-not-vendored training/latent-inference codebase (see "What was removed" below).
 
 Example reproduction command (elastic-soft; swap `material=`, `save_dir=`, and the
 `objects.sphere.material.*` overrides per the table above — see `simulation/README.md` for the
@@ -142,7 +146,7 @@ internally already.
 ## What was removed (don't try to resurrect without asking)
 
 The `simulation/` tree used to be a full clone of `HimangiM/UniPhy_CVPR2025` (own nested `.git`, ~1.9GB). The following were deleted as unused for reproducing the canonical simulation, confirmed via import-tracing before removal:
-- `simulation/nclaw/` — separate NCLaw-based training/latent-inference codebase (`train_latent_space.py`, `gradio_demo/infer_material_latent.py` consume `GtX.pt`/`GtF.pt` as training data, but nothing in `dataset_generate.py`'s import chain touches `nclaw`).
+- `simulation/nclaw/` — separate NCLaw-based training/latent-inference codebase (`train_latent_space.py`, `gradio_demo/infer_material_latent.py` consume `GtX.pt`/`GtF.pt` as training data, but nothing in `dataset_generate.py`'s import chain touches `nclaw`). Investigated for re-vendoring and decided against for now (2026-07-22): neither `train_latent_space.py` nor `infer_material_latent.py` actually imports the `nclaw` Python package itself (both define their model classes inline) — the `nclaw` package is only used by UniPhy's own `experiments/*` scripts. Re-vendoring the two entry scripts would also require pulling in 4 sibling files from `gradio_demo/` (a different learnable-stress MPM simulator, not `data_process`'s) plus a 422MB pretrained checkpoint, and the vendored code as-shipped has several known issues (an `nn_activation: elu` bug with no `elu` branch in the model class, a checkpoint/training-script architecture mismatch, a missing `ipdb` dependency, an incompatible training-data directory convention). Not needed right now — ask before re-vendoring.
 - `simulation/gradio_demo/`, `simulation/experiments/` — unused demo app / experiment scripts + their own duplicate config trees.
 - `simulation/configs/` (top-level, distinct from `simulation/data_process/configs/`) — an unrelated duplicate config tree, not read by `dataset_generate.py`.
 - `simulation/third_party/warp/` — vendored copy of the `warp` package; redundant since nothing in the current pipeline needs Warp (that was the *previous*, now also-deleted, `data/simulations/000_.../simulate.py` custom Warp reimplementation — a completely different codebase from this Taichi-based `data_process` pipeline, don't conflate the two if you see references to "Warp" in old commit messages).
@@ -151,10 +155,6 @@ The `simulation/` tree used to be a full clone of `HimangiM/UniPhy_CVPR2025` (ow
 - `data/simulations/000_elastic_sphere_free_fall/` — the old example (custom Warp reimplementation, jelly preset, different physics/material params) superseded by `001_elastic_sphere_tissue_free_fall_test`.
 
 If you need something from one of these (e.g. a different object geometry, a different material preset, or the NCLaw training pipeline), it's gone from this repo — ask before trying to re-vendor it wholesale; a targeted re-add of just what's needed is preferable to pulling the whole UniPhy tree back in.
-
-## `configs/metadata_template.json` — still not implemented
-
-Reference schema for a Genesis-pipeline-style metadata file (camera arrays, MPM bounds, per-object material params). This describes a *different*, not-yet-implemented simulator convention than the current Taichi/`data_process`-based pipeline in `simulation/` — treat it as the target schema for an eventual Genesis-based pipeline, not as documentation of current output.
 
 ## `dataset_viewer.html`
 
@@ -173,10 +173,22 @@ geometry/gravity/grid config that's identical across every sim, so it isn't dupl
   — the id-based path convention means adding a new variant only needs one `id` field, not four.
 - File paths are relative to the HTML file's own location (repo root, since GitHub Pages serves
   from there).
-- There's a separate, unrelated sidebar "coming soon" placeholder entry `001_elastic_sphere_poke`
-  (different ID, not yet built) — don't confuse it with the real material entries.
 
 No JS runtime (`node` etc.) is installed on this dev machine to lint/typecheck the inline script — sanity-check edits with a brace/paren/bracket balance count (and a backtick-parity count, since the template-literal-heavy render functions are the likeliest source of a subtle break) or by opening the file in a browser (`xdg-open`/`firefox dataset_viewer.html`, X11 display already available on this machine) rather than assuming a `node --check` step is available.
+
+## `notebooks/review_trajectories.ipynb`
+
+Loads a single sim output dir's `GtX.pt`/`GtV.pt` (and `GtF.pt`/`GtC.pt` when present), prints
+tensor shapes/dtypes/particle counts, and plots a quick 3D scatter (initial vs. final particle
+positions) plus a trajectory summary (COM height, bounding-box extents, mean speed, and — if
+`GtF.pt` is present — mean deformation magnitude, all vs. substep). Point `SIM_DIR` at any
+`simulation/output/<id>/` (the 10 canonical `001a`-`005b` sims or `011_...`). Applies the same
+trim conventions as `simulation/analyze_sim.py`/`compute_diagnostics.py`: `GtX`/`GtV`/`GtC` are
+valid over `[0, T-2)`, `GtF` over `[1, T-2)` (see the "Important dt/frame gotcha" note above for
+why). Run it with the `uniphy` conda env as the Jupyter kernel (already has `torch`/`matplotlib`;
+no GPU/Taichi needed just to load and plot tensors) — register it once with
+`conda activate uniphy && python -m ipykernel install --user --name uniphy` if the kernel isn't
+already available.
 
 ## Working with large files in git
 
