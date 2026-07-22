@@ -428,76 +428,6 @@
     padding: 0.15rem 0.5rem;
     border-radius: 3px;
   }
-
-  /* ── EXPERIMENTAL SECTION (proxy_net) — visually distinct from the 5 validated
-     materials: dashed divider/border instead of solid, orange instead of teal ── */
-  .sidebar-title.exp-divider {
-    margin-top: 1rem;
-    border-top: 1px dashed rgba(245,166,35,0.3);
-    padding-top: 1rem;
-    color: rgba(245,166,35,0.8);
-  }
-
-  .sim-item-experimental {
-    border-left-style: dashed;
-    border-left-color: rgba(245,166,35,0.4);
-  }
-  .sim-item-experimental:hover {
-    background: rgba(245,166,35,0.08);
-    border-left-color: var(--orange);
-  }
-  .sim-item-experimental.active {
-    background: rgba(245,166,35,0.12);
-    border-left-color: var(--orange);
-  }
-  .sim-item-experimental .sim-id { color: var(--orange); }
-
-  .exp-badge {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.55rem;
-    background: rgba(245,166,35,0.18);
-    border: 1px solid rgba(245,166,35,0.4);
-    color: var(--orange);
-    padding: 0.08rem 0.4rem;
-    border-radius: 3px;
-    margin-left: 0.4rem;
-    vertical-align: middle;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .caveat-box {
-    background: rgba(245,166,35,0.08);
-    border: 1px solid rgba(245,166,35,0.35);
-    border-left: 4px solid var(--orange);
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.82rem;
-    color: var(--teal-mid);
-    line-height: 1.6;
-  }
-  .caveat-box b { color: var(--white); }
-
-  .results-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-  }
-  .results-table th, .results-table td {
-    padding: 0.55rem 0.8rem;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .results-table th {
-    color: var(--teal-mid);
-    text-transform: uppercase;
-    font-size: 0.65rem;
-    letter-spacing: 0.06em;
-  }
-  .results-table td { color: var(--white); }
 </style>
 </head>
 <body>
@@ -553,18 +483,6 @@
     <div class="sim-item" onclick="selectMaterial('nonNewtonian', this)">
       <div class="sim-id">005 · Non-Newtonian</div>
       <div class="sim-tag">von Mises plastic · shear-thinning vs. shear-thickening</div>
-    </div>
-
-    <div class="sim-item" onclick="showComingSoon(this)" style="opacity:0.4;pointer-events:none;">
-      <div class="sim-id">001_elastic_sphere_poke</div>
-      <div class="sim-tag">coming soon</div>
-    </div>
-
-    <div class="sidebar-title exp-divider">Experimental (not a validated sim)</div>
-
-    <div class="sim-item sim-item-experimental" onclick="selectProxyExperiment(this)">
-      <div class="sim-id">🧪 Proxy Network<span class="exp-badge">experimental</span></div>
-      <div class="sim-tag">experiments/proxy_net — direct state→state map, skips MPM rollout</div>
     </div>
 
     <div style="padding:1.5rem 1.2rem 0.5rem; border-top:1px solid rgba(255,255,255,0.05); margin-top:1rem;">
@@ -754,8 +672,6 @@ function renderJSONBlock(obj, indent = 0) {
   return renderJSONValue(obj);
 }
 
-function showComingSoon(el) {}
-
 function variantCard(variant, key, material) {
   const r = variant.results;
   const ffBadge = r.free_fall_validated
@@ -872,88 +788,6 @@ function selectMaterial(matKey, el) {
     <div class="pair-grid">
       ${variantCard(mat.variants.a, 'a', mat)}
       ${variantCard(mat.variants.b, 'b', mat)}
-    </div>
-  `;
-}
-
-// ── EXPERIMENTAL: proxy_net sanity-check (experiments/proxy_net/) ──
-// Separate from the 5 validated materials above: not a pair-grid low/high
-// comparison, just a single results section. See experiments/proxy_net/README.md
-// for the full experiment writeup.
-const PROXY_EXPERIMENT = {
-  image: "experiments/proxy_net/output/comparison.png",
-  results: [
-    { material: "Elastic (001a, soft)", rolloutError: "1.07e-07", proxyError: "7.75e-04", rolloutTime: "14.6 s", proxyTime: "9.2e-05 s" },
-    { material: "Plasticine (002a, runny)", rolloutError: "1.57e-06", proxyError: "1.26e-03", rolloutTime: "8.2 s", proxyTime: "9.2e-05 s" },
-  ],
-};
-
-function selectProxyExperiment(el) {
-  document.querySelectorAll('.sim-item').forEach(item => item.classList.remove('active'));
-  if (el) el.classList.add('active');
-
-  const view = document.getElementById('sim-view');
-  view.className = 'fade-in';
-  void view.offsetWidth;
-
-  const rows = PROXY_EXPERIMENT.results.map(r => `
-    <tr>
-      <td>${r.material}</td>
-      <td>${r.rolloutError}</td>
-      <td>${r.proxyError}</td>
-      <td>${r.rolloutTime}</td>
-      <td>${r.proxyTime}</td>
-    </tr>`).join('');
-
-  view.innerHTML = `
-    <div class="sim-header">
-      <div>
-        <div class="sim-title">Proxy Network <span>Experiment</span><span class="exp-badge">experimental — not a validated sim</span></div>
-        <div style="margin-top:0.4rem;">
-          <span class="tag tag-poke">experiments/proxy_net/</span>
-          <span class="tag tag-4cam">N=2, illustrative only</span>
-        </div>
-        <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--teal-mid);max-width:70ch;line-height:1.6;">
-          Sanity check (Prof. Boominathan's suggestion): does a cheap per-trajectory descriptor plus
-          the initial state carry enough information for a direct one-shot map to the final state,
-          skipping the timestep-by-timestep MPM rollout entirely? Not part of the validated dataset
-          above — a separate, throwaway side-experiment.
-        </p>
-      </div>
-    </div>
-
-    <div class="caveat-box">
-      <b>⚠ Read before trusting any number below:</b><br><br>
-      This is a <b>training-set reconstruction result over N=2 trajectories only</b> (elastic 001a,
-      plasticine 002a) — with just 2 examples there is no held-out test set, so low error mostly
-      shows the network can memorize a discriminating-key mapping, not that it generalizes to an
-      unseen material.<br><br>
-      The 5-dim input (mu, lambda, yield_stress, plastic_viscosity, friction_alpha) is a
-      <b>stand-in for a real learned latent z</b> — this is <b>not</b> UniPhy's actual g_phi/f_theta
-      latent-conditioned architecture, which is <b>not vendored anywhere in this repo</b> (that code
-      lived in the now-deleted simulation/nclaw/, and no pretrained weights exist locally either).<br><br>
-      The <b>~10⁵× per-call speedup is real</b> (one MLP forward pass vs. 1999 physics substeps) —
-      the accuracy numbers above are illustrative only.
-    </div>
-
-    <div class="section">
-      <div class="section-header">📊 Comparison plot</div>
-      <div class="section-body">
-        <div class="video-card">
-          <img src="${PROXY_EXPERIMENT.image}" alt="Proxy network comparison plot">
-          <div class="video-caption">rollout vs. proxy vs. ground truth final-state positions, both materials</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-header">📋 Results table</div>
-      <div class="section-body">
-        <table class="results-table">
-          <thead><tr><th>Material</th><th>Rollout error</th><th>Proxy error</th><th>Rollout time</th><th>Proxy time</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
     </div>
   `;
 }
