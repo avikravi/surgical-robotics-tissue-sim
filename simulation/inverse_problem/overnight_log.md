@@ -52,7 +52,8 @@ of the literal last array index.
    path as the initial render, which did work), but didn't screenshot the drag
    interaction itself frame-by-frame.
 3. Skim the CLAUDE.md/README.md diffs (in Step 6's log entry below) for tone/accuracy.
-4. `git push` already happened -- `git log origin/main -1` should show `2d611d6` as tip.
+4. `git push` already happened -- `git log origin/main -1` should show `9333ff7` (this
+   log file's own commit) as tip, on top of `2d611d6`/`0e4ae3d`/`29dcbf8`/`044f302`.
 
 ---
 
